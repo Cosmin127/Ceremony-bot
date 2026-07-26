@@ -62,14 +62,15 @@ MEDAL_HEADER_MAP = {
 
     "GRENADIER KORP MEDALS":
         "Grenadier Korps Ehrenkruiz",
-    "AWARDED ORDER OF THE GOLDEN FLEECE": "Ordn des Goldenen Vlies",
+    
+    "AWARDED ORDER OF THE GOLDEN FLEECE": 
+        "Ordn des Goldenen Vlies",
 }
 
 # When medals with higher clasps are given, you just manually change the clasp in the google sheet, so with this the algorithm will ignore people who got medals with clasps higher than bronze, except social medals which only have silver.
 
 IGNORE_CLASPS = {
-    "Gold",
-    "Silver"
+    
 }
 
 # Self explanatory no?

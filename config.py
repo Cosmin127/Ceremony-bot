@@ -65,6 +65,24 @@ MEDAL_HEADER_MAP = {
     
     "AWARDED ORDER OF THE GOLDEN FLEECE": 
         "Ordn des Goldenen Vlies",
+
+    "AWARDED ORDER OF MARIA THERESA":
+        "Ordn von Maria Theresia",
+    
+    "AWARDED ORDER OF ELIZABETH AND THERESA":
+        "Ordn von Elisabeth und Theresia",
+
+    "AWARDED ORDER OF THE EAGLE":
+        "Ordn des Adlers von Este",
+
+    "AWARDED ORDER OF LEOPOLD":
+        "Ordn von Leopold",
+
+    "AWARDED ORDER OF ST. STEPHEN":
+        "Ordn des Heiligen Stephanus",
+
+    "AWARDED ORDER OF THE IRON CROWN":
+        "Ordn der Eisernen Krone",
 }
 
 # When medals with higher clasps are given, you just manually change the clasp in the google sheet, so with this the algorithm will ignore people who got medals with clasps higher than bronze, except social medals which only have silver.

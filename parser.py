@@ -6,7 +6,7 @@ from config import (
 
 
 LINE_RE = re.compile(
-    r"\[(.*?)\]\s*-?\s*([A-Za-z0-9_]+)\s*[-,]?\s*(.*)"
+    r"(?:\[(.*?)\]\s*-?\s*)?([A-Za-z0-9_]+)\s*,\s*(.+)"
 )
 
 
@@ -43,7 +43,7 @@ def parse_document(text):
         if not m:
             continue
 
-        regiment_tag = m.group(1).strip()
+        regiment_tag = (m.group(1) or "GS").strip()
         username = m.group(2).strip()
         clasp = m.group(3).strip()
 

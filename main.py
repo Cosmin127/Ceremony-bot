@@ -1,0 +1,167 @@
+from pathlib import Path
+from datetime import datetime
+import sys
+
+from openpyxl import Workbook
+from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter
+
+from parser import parse_document
+from roblox import lookup
+
+
+def autosize(ws):
+
+    for column in ws.columns:
+
+        length = 0
+
+        column_letter = get_column_letter(column[0].column)
+
+        for cell in column:
+
+            if cell.value is None:
+                continue
+
+            length = max(
+                length,
+                len(str(cell.value))
+            )
+
+        ws.column_dimensions[column_letter].width = min(length + 3, 60)
+
+
+def main():
+
+    if len(sys.argv) != 2:
+
+        print("Usage:")
+        print("python main.py ceremony.txt")
+        return
+
+    input_file = Path(sys.argv[1])
+
+    if not input_file.exists():
+
+        print("Input file not found.")
+        return
+
+    print(f"Reading {input_file.name}")
+
+    text = input_file.read_text(
+        encoding="utf-8"
+    )
+
+    rows, skipped = parse_document(text)
+
+    print("\nResolving Roblox profiles...\n")
+
+    failed = 0
+
+    for row in rows:
+
+        profile = lookup(row["username"])
+
+        if profile is None:
+
+            print(
+                f"Couldn't find profile for {row['username']}"
+            )
+
+            profile = ""
+
+            failed += 1
+
+        row["profile"] = profile
+
+    wb = Workbook()
+
+    ws = wb.active
+
+    ws.title = "Medals"
+
+    headers = [
+
+        "Name",
+        "Korps",
+        "Regiment",
+        "Roblox Profile",
+        "Medal",
+        "Medal Clasp",
+        "Reason",
+        "Date",
+        "Logged By",
+
+    ]
+
+    ws.append(headers)
+
+    for cell in ws[1]:
+
+        cell.font = Font(bold=True)
+
+    for row in rows:
+
+        excel_row = [
+
+            row["username"],
+            "",
+            row["regiment"],
+            row["profile"],
+            row["medal"],
+            row["clasp"],
+            "",
+            "",
+            "",
+
+        ]
+
+        ws.append(excel_row)
+
+        profile_cell = ws.cell(
+            row=ws.max_row,
+            column=4
+        )
+
+        if row["profile"]:
+
+            profile_cell.hyperlink = row["profile"]
+            profile_cell.style = "Hyperlink"
+
+    ws.freeze_panes = "A2"
+
+    autosize(ws)
+
+    output_dir = Path("output")
+
+    output_dir.mkdir(exist_ok=True)
+
+    timestamp = datetime.now().strftime(
+        "%Y-%m-%d_%H-%M-%S"
+    )
+
+    output_file = output_dir / f"medals_{timestamp}.xlsx"
+
+    wb.save(output_file)
+
+    print("\n========== SUMMARY ==========\n")
+
+    print(f"Rows written: {len(rows)}")
+    print(f"Skipped (Gold/Silver/etc): {len(skipped)}")
+    print(f"Profiles not found: {failed}")
+    print(f"Workbook saved to:\n{output_file}")
+
+    if skipped:
+
+        print("\nSkipped medals:\n")
+
+        for s in skipped:
+
+            print(
+                f"{s['user']} | {s['medal']} | {s['clasp']}"
+            )
+
+
+if __name__ == "__main__":
+
+    main()

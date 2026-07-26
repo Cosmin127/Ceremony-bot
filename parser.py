@@ -48,18 +48,18 @@ def parse_document(text):
         username = m.group(2).strip()
         clasp = m.group(3).strip()
 
-    if not clasp:
-        clasp = "No Clasp"
+        if not clasp:
+            clasp = "No Clasp"
+        
+        clasp = re.sub(r"\s+clasp\b", "", clasp, flags=re.IGNORECASE)
+        clasp = re.sub(r"\s+class\b", "", clasp, flags=re.IGNORECASE)
+        clasp = re.sub(r"\s+medal\b", "", clasp, flags=re.IGNORECASE)
+        
+        clasp = re.sub(r"[.,;:]+$", "", clasp)
     
-    clasp = re.sub(r"\s+clasp\b", "", clasp, flags=re.IGNORECASE)
-    clasp = re.sub(r"\s+class\b", "", clasp, flags=re.IGNORECASE)
-    clasp = re.sub(r"\s+medal\b", "", clasp, flags=re.IGNORECASE)
-    
-    clasp = re.sub(r"[.,;:]+$", "", clasp)
-
-    clasp = re.sub(r"\s+", " ", clasp).strip()
-    
-    clasp = clasp.title()
+        clasp = re.sub(r"\s+", " ", clasp).strip()
+        
+        clasp = clasp.title()
 
         if clasp not in (
             "Bronze",

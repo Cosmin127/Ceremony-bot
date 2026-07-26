@@ -8,6 +8,14 @@ REGIMENT_MAP = {
     "UH": "Kavallerie",
     "TFA": "Artillery",
     "V": "",
+    "AG": "Alte Grenadiere",
+    "JG": "Junge Grenadiere",
+    "MG": "Alte Grenadière",
+    "GS": "",
+    "GR": "Grenz Infanterie",
+    "UH": "Kaiserliche Husaren",
+    "RH": "Kaiserliche Ulanen",
+    "LG": "Kaiserliche Leibgarde",
 }
 
 # in MEDAL_HEADER_MAP it's mostly the same thing. You go see the exact wording of the medals in the ceremony document, then put the names of the medals inside the google sheet. Example:

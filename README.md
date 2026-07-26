@@ -27,7 +27,7 @@ Make the python environment for the python scripts to run:
 ```cmd
 python -m venv .venv
 .venv\bin\activate
-pip install -f requirements.txt
+pip install -r requirements.txt
 ```
 
 # How to use and run

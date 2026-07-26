@@ -35,7 +35,8 @@ First, make sure the algorithm knows what medals you're going to log, so edit co
 
 Download the ceremony document in plain text, then rename it to ceremony.txt and put it in the root of the application, aka next to the python scripts. Then run:
 ```cmd
+cd Desktop\Ceremony-bot
 .venv\bin\activate
-python main.py
+python main.py ceremony.txt
 ```
 The Excel file will be inside the output folder.

@@ -71,7 +71,7 @@ def parse_document(text):
             "Ritter",
             "Hochmeister",
             "Knappe",
-            "No Clasp",
+            "No",
         ):
             skipped.append(
                 {

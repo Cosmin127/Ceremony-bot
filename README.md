@@ -17,7 +17,7 @@ cd Desktop
 ```
 Then to actually pull the files from the github, you do:
 ```cmd
-
+git clone https://github.com/Cosmin127/Ceremony-bot.git
 ```
 Go inside the folder of the application:
 ```cmd

@@ -56,6 +56,14 @@ def parse_document(text):
 
         if clasp not in (
             "Bronze",
+            "Silver",
+            "Silber",
+            "Gold",
+            "Großmeister",
+            "Kommandeur",
+            "Ritter",
+            "Hochmeister",
+            "Knappe",
             "No Clasp",
         ):
             skipped.append(

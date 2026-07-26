@@ -35,13 +35,14 @@ def parse_document(text):
 
             continue
 
+        if current_medal is not None and not LINE_RE.match(line):
+            current_medal = None
+            continue
+
         if current_medal is None:
             continue
 
         m = LINE_RE.match(line)
-
-        if not m:
-            continue
 
         regiment_tag = (m.group(1) or "GS").strip()
         username = m.group(2).strip()

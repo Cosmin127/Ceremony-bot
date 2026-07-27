@@ -1,5 +1,4 @@
 from pathlib import Path
-
 from flask import (
     Flask,
     render_template,
@@ -7,7 +6,7 @@ from flask import (
     send_file,
     redirect,
 )
-
+import os
 from main import generate_excel
 
 app = Flask(__name__)
@@ -39,13 +38,29 @@ def generate():
 
     result = generate_excel(upload_path)
 
-    return send_file(
+    # Delete the uploaded .txt
+    try:
+        os.remove(upload_path)
+    except FileNotFoundError:
+        pass
+
+    response = send_file(
         result["output"],
         as_attachment=True,
         download_name=result["output"].name,
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
+    # Delete the generated Excel after it's been sent
+    @response.call_on_close
+    def cleanup():
+
+        try:
+            os.remove(result["output"])
+        except FileNotFoundError:
+            pass
+
+    return response
 
 if __name__ == "__main__":
 

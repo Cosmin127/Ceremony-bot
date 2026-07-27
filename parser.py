@@ -4,7 +4,7 @@ from config import (
     MEDAL_HEADER_MAP
 )
 
-
+# this whole parser.py pmo and this regex better work
 LINE_RE = re.compile(
     r"(?:\[(.*?)\]\s*-?\s*)?([A-Za-z0-9_]+)\s*,\s*(.+)"
 )

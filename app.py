@@ -1,24 +1,5 @@
 from pathlib import Path
 import uuid
-from flask import (
-    Flask,
-    render_template,
-    request,
-    send_file,
-    redirect,
-)
-import os
-from main import generate_excel
-
-app = Flask(__name__)
-
-UPLOAD_FOLDER = Path("uploads")
-OUTPUT_FOLDER = Path("output")
-
-UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
-OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
-from pathlib import Path
-import uuid
 import os
 
 from flask import (
@@ -104,30 +85,6 @@ def generate():
 
     return response
 
-
-if __name__ == "__main__":
-
-    app.run(
-        host="0.0.0.0",
-        port=5023,
-        debug=True,
-    )
-       result["output"],
-        as_attachment=True,
-        download_name=result["output"].name,
-        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    )
-
-    # Delete the generated Excel after it's been sent
-    @response.call_on_close
-    def cleanup():
-
-        try:
-            os.remove(result["output"])
-        except FileNotFoundError:
-            pass
-
-    return response
 
 if __name__ == "__main__":
 

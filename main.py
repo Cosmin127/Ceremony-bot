@@ -116,27 +116,164 @@ def generate_excel(input_file: Path):
             profile_cell.style = "Hyperlink"
 
     ws.freeze_panes = "A2"
+from pathlib import Path
+from datetime import datetime
+import json
+import sys
 
-    autosize(ws)
+from openpyxl import Workbook
+from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter
 
-    output_dir = Path("output")
+from parser import parse_document
+from roblox import lookup
 
-    output_dir.mkdir(exist_ok=True)
 
-    timestamp = datetime.now().strftime(
-        "%Y-%m-%d_%H-%M-%S"
+def autosize(ws):
+
+    for column in ws.columns:
+
+        length = 0
+
+        column_letter = get_column_letter(column[0].column)
+
+        for cell in column:
+
+            if cell.value is None:
+                continue
+
+            length = max(length, len(str(cell.value)))
+
+        ws.column_dimensions[column_letter].width = min(length + 3, 60)
+
+
+def process_file(input_file: Path, output="excel"):
+
+    print(f"Reading {input_file.name}")
+
+    text = input_file.read_text(
+        encoding="utf-8"
     )
 
-    output_file = output_dir / f"medals_{timestamp}.xlsx"
+    rows, skipped = parse_document(text)
 
-    wb.save(output_file)
+    print("\nResolving Roblox profiles...\n")
 
-    return {
-        "output": output_file,
-        "rows": len(rows),
-        "skipped": skipped,
-        "failed": failed,
-    }
+    failed = 0
+
+    for row in rows:
+
+        profile = lookup(row["username"])
+
+        if profile is None:
+
+            print(f"Couldn't find profile for {row['username']}")
+
+            profile = ""
+
+            failed += 1
+
+        row["profile"] = profile
+
+    output_dir = Path("output")
+    output_dir.mkdir(exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    if output == "json":
+
+        output_file = output_dir / f"medals_{timestamp}.json"
+
+        json_rows = []
+
+        for row in rows:
+
+            json_rows.append({
+
+                "username": row["username"],
+                "regiment": row["regiment"],
+                "profile": row["profile"],
+                "award": row["medal"],
+                "class": row["clasp"],
+                "reason": "",
+                "date": "",
+                "logged_by": "",
+
+            })
+
+        with open(output_file, "w", encoding="utf-8") as f:
+
+            json.dump(
+                json_rows,
+                f,
+                indent=4,
+                ensure_ascii=False
+            )
+
+    else:
+
+        wb = Workbook()
+
+        ws = wb.active
+
+        ws.title = "Medals"
+
+        headers = [
+
+            "Name",
+            "Korps",
+            "Regiment",
+            "Roblox Profile",
+            "Medal",
+            "Medal Clasp",
+            "Reason",
+            "Date",
+            "Logged By",
+
+        ]
+
+        ws.append(headers)
+
+        for cell in ws[1]:
+
+            cell.font = Font(bold=True)
+
+        for row in rows:
+
+            ws.append([
+
+                row["username"],
+                "",
+                row["regiment"],
+                row["profile"],
+                row["medal"],
+                row["clasp"],
+                "",
+                "",
+                "",
+
+            ])
+
+            profile_cell = ws.cell(
+                row=ws.max_row,
+                column=4
+            )
+
+            if row["profile"]:
+
+                profile_cell.hyperlink = row["profile"]
+                profile_cell.style = "Hyperlink"
+
+        ws.freeze_panes = "A2"
+
+        autosize(ws)
+
+        output_file = output_dir / f"medals_{timestamp}.xlsx"
+
+        wb.save(output_file)
+
+    return output_file
+
 
 def main():
 
@@ -153,9 +290,18 @@ def main():
         print("Input file not found.")
         return
 
-    print("\n========== SUMMARY ==========\n")
+    output = process_file(input_file)
 
-    print(f"Rows written: {len(rows)}")
+    print()
+
+    print("Finished.")
+    print(f"Output saved to:\n{output}")
+
+
+if __name__ == "__main__":
+
+    main()
+}")
     print(f"Skipped (Gold/Silver/etc): {len(skipped)}")
     print(f"Profiles not found: {failed}")
     print(f"Workbook saved to:\n{output_file}")

@@ -1,4 +1,5 @@
 from pathlib import Path
+import uuid
 from flask import (
     Flask,
     render_template,
@@ -32,7 +33,9 @@ def generate():
     if file.filename == "":
         return redirect("/")
 
-    upload_path = UPLOAD_FOLDER / file.filename
+    extension = Path(file.filename).suffix.lower()
+
+    upload_path = UPLOAD_FOLDER / f"{uuid.uuid4()}{extension}"
 
     file.save(upload_path)
 

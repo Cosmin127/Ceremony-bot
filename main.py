@@ -31,21 +31,8 @@ def autosize(ws):
         ws.column_dimensions[column_letter].width = min(length + 3, 60)
 
 
-def main():
-
-    if len(sys.argv) != 2:
-
-        print("Usage:")
-        print("python main.py ceremony.txt")
-        return
-
-    input_file = Path(sys.argv[1])
-
-    if not input_file.exists():
-
-        print("Input file not found.")
-        return
-
+def generate_excel(input_file: Path):
+    
     print(f"Reading {input_file.name}")
 
     text = input_file.read_text(
@@ -143,6 +130,28 @@ def main():
     output_file = output_dir / f"medals_{timestamp}.xlsx"
 
     wb.save(output_file)
+
+    return {
+        "output": output_file,
+        "rows": len(rows),
+        "skipped": skipped,
+        "failed": failed,
+    }
+
+def main():
+
+    if len(sys.argv) != 2:
+
+        print("Usage:")
+        print("python main.py ceremony.txt")
+        return
+
+    input_file = Path(sys.argv[1])
+
+    if not input_file.exists():
+
+        print("Input file not found.")
+        return
 
     print("\n========== SUMMARY ==========\n")
 

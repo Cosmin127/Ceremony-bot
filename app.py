@@ -13,7 +13,10 @@ from main import generate_excel
 app = Flask(__name__)
 
 UPLOAD_FOLDER = Path("uploads")
-UPLOAD_FOLDER.mkdir(exist_ok=True)
+OUTPUT_FOLDER = Path("output")
+
+UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
+OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
 
 
 @app.get("/")

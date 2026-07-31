@@ -657,6 +657,13 @@
             // Show loading overlay
             loadingOverlay.classList.add('show');
             submitBtn.disabled = true;
+
+            // Auto-hide after 3 seconds (enough time for processing + download to start)
+            // The download should trigger within this time
+            setTimeout(function() {
+                loadingOverlay.classList.remove('show');
+                submitBtn.disabled = false;
+            }, 3000);
         });
 
         // Hide loading overlay if the user navigates back (in case of error)

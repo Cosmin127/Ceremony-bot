@@ -33,6 +33,7 @@ def process_file(
     output="excel",
     reason="",
     logged_by="",
+    exclude_clasps=None,
 ):
 
     print(f"Reading {input_file.name}")
@@ -41,7 +42,10 @@ def process_file(
         encoding="utf-8"
     )
 
-    rows, skipped = parse_document(text)
+    rows, skipped = parse_document(
+        text,
+        exclude_clasps or {},
+    )
 
     print("\nResolving Roblox profiles...\n")
 

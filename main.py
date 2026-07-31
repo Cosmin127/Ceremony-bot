@@ -28,8 +28,12 @@ def autosize(ws):
 
         ws.column_dimensions[column_letter].width = min(length + 3, 60)
 
-
-def process_file(input_file: Path, output="excel"):
+def process_file(
+    input_file: Path,
+    output="excel",
+    reason="",
+    logged_by="",
+):
 
     print(f"Reading {input_file.name}")
 
@@ -62,6 +66,8 @@ def process_file(input_file: Path, output="excel"):
 
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
+    today = datetime.now().strftime("%d/%m/%y")
+
     if output == "json":
 
         output_file = output_dir / f"medals_{timestamp}.json"
@@ -71,16 +77,11 @@ def process_file(input_file: Path, output="excel"):
         for row in rows:
 
             json_rows.append({
-
+            
                 "username": row["username"],
-                "regiment": row["regiment"],
-                "profile": row["profile"],
-                "award": row["medal"],
-                "class": row["clasp"],
-                "reason": "",
-                "date": "",
-                "logged_by": "",
-
+                "medal": row["medal"],
+                "clasp": row["clasp"],
+            
             })
 
         with open(output_file, "w", encoding="utf-8") as f:
@@ -123,17 +124,17 @@ def process_file(input_file: Path, output="excel"):
         for row in rows:
 
             ws.append([
-
+            
                 row["username"],
                 "",
                 row["regiment"],
                 row["profile"],
                 row["medal"],
                 row["clasp"],
-                "",
-                "",
-                "",
-
+                reason,
+                today,
+                logged_by,
+            
             ])
 
             profile_cell = ws.cell(

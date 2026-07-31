@@ -8,7 +8,6 @@ from flask import (
     render_template,
     request,
     send_file,
-    redirect,
     jsonify,
 )
 
@@ -16,7 +15,7 @@ from main import process_file
 
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
 UPLOAD_FOLDER = Path("uploads")
 OUTPUT_FOLDER = Path("output")
@@ -33,13 +32,23 @@ def index():
 @app.post("/generate")
 def generate():
     try:
+        print(f"Files: {request.files}")
+        print(f"Form: {request.form}")
+
         if "file" not in request.files:
+            print("ERROR: No file in request")
             return jsonify({"error": "No file uploaded"}), 400
 
         file = request.files["file"]
 
         if file.filename == "":
+            print("ERROR: Empty filename")
             return jsonify({"error": "Empty filename"}), 400
+
+        print(f"File received: {file.filename}, size: {len(file.read()) if file else 'unknown'}")
+
+        # Reset file pointer after reading
+        file.seek(0)
 
         output_type = request.form.get("output", "excel")
         reason = request.form.get("reason", "").strip()
@@ -62,6 +71,8 @@ def generate():
         upload_path = UPLOAD_FOLDER / f"{uuid.uuid4()}{extension}"
         file.save(upload_path)
 
+        print(f"File saved to: {upload_path}")
+
         output_file = process_file(
             upload_path,
             output=output_type,
@@ -71,6 +82,8 @@ def generate():
             ceremony_type=ceremony_type,
         )
 
+        print(f"Output file: {output_file}")
+
         # Clean up upload
         try:
             os.remove(upload_path)
@@ -78,6 +91,7 @@ def generate():
             pass
 
         if not output_file.exists():
+            print(f"ERROR: Output file not found: {output_file}")
             return jsonify({"error": "Output file was not created"}), 500
 
         if output_type == "json":

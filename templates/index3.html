@@ -2,10 +2,14 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Ceremony Bot</title>
+
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -18,7 +22,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 30px;
             margin: 0;
             position: relative;
             overflow: hidden;
@@ -73,7 +77,6 @@
             background: radial-gradient(ellipse at center, rgba(10, 10, 18, 0.3) 0%, rgba(10, 10, 18, 0.7) 100%);
         }
 
-        /* Main container - side by side */
         .container {
             position: relative;
             z-index: 2;
@@ -81,14 +84,12 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 24px;
+            padding: 40px 45px;
+            max-width: 1100px;
+            width: 100%;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: row;
-            max-width: 1200px;
-            width: 100%;
             overflow: hidden;
-            min-height: 600px;
         }
 
         .container::before {
@@ -99,47 +100,52 @@
             right: 0;
             height: 3px;
             background: linear-gradient(90deg, transparent, #a38a56, transparent);
-            z-index: 10;
         }
 
-        /* LEFT PANEL - eagle, motto, file upload */
-        .left-panel {
-            flex: 0 0 340px;
-            padding: 40px 30px;
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        /* LEFT COLUMN - Eagle, Motto, Upload */
+        .left-col {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.2);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            min-height: 100%;
+            padding-top: 10px;
         }
 
-        .header-logo img {
-            height: 200px;
+        .left-col .header-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .left-col .header-logo img {
+            height: 280px;
             width: auto;
             opacity: 0.95;
-            display: block;
-            margin: 0 auto 15px;
         }
 
-        .motto {
+        .left-col .motto {
             color: #a38a56;
             font-family: 'Times New Roman', Times, serif;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            letter-spacing: 4px;
-            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 22px;
             text-shadow: 0 0 40px rgba(163, 138, 86, 0.15);
-            margin-bottom: 30px;
-            line-height: 1.2;
+            text-align: center;
         }
 
         .upload-area {
             width: 100%;
             border: 2px dashed rgba(255, 255, 255, 0.15);
             border-radius: 16px;
-            padding: 30px 20px;
+            padding: 35px 25px;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -157,7 +163,7 @@
 
         .upload-icon {
             font-size: 40px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: block;
             opacity: 0.7;
         }
@@ -165,15 +171,15 @@
         .upload-area .label {
             color: #ffffff;
             font-family: 'Times New Roman', Times, serif;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
         }
 
         .upload-area .sub-label {
-            color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.25);
             font-family: 'Times New Roman', Times, serif;
-            font-size: 13px;
-            margin-top: 6px;
+            font-size: 12px;
+            margin-top: 4px;
         }
 
         .upload-area.dragover {
@@ -184,8 +190,8 @@
         .file-name {
             color: rgba(255, 255, 255, 0.3);
             font-family: 'Times New Roman', Times, serif;
-            font-size: 13px;
-            margin-top: 10px;
+            font-size: 12px;
+            margin-top: 8px;
             display: none;
         }
 
@@ -197,48 +203,29 @@
             color: #a38a56;
         }
 
-        /* RIGHT PANEL - all form fields */
-        .right-panel {
-            flex: 1;
-            padding: 40px 40px 40px 35px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .right-panel form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            width: 100%;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+        /* RIGHT COLUMN - Form Fields */
+        .right-col {
+            padding-top: 10px;
         }
 
         .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
             color: rgba(255, 255, 255, 0.5);
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            margin-bottom: 2px;
+            margin-bottom: 5px;
         }
 
         .form-group input[type="text"] {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 10px;
@@ -259,23 +246,29 @@
             color: rgba(255, 255, 255, 0.2);
         }
 
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
         .toggle-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.04);
             padding: 4px;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .toggle-group label {
             flex: 1;
             text-align: center;
-            padding: 10px 16px;
-            border-radius: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-family: 'Times New Roman', Times, serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.35);
             transition: all 0.3s ease;
@@ -291,39 +284,29 @@
             display: none;
         }
 
-        .toggle-group input[type="radio"]:checked+label {
+        .toggle-group input[type="radio"]:checked + label {
             background: rgba(163, 138, 86, 0.12);
             color: #a38a56;
             box-shadow: 0 4px 12px rgba(163, 138, 86, 0.06);
         }
 
-        .section-title {
-            color: rgba(255, 255, 255, 0.3);
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 8px 0 4px 0;
-        }
-
         .checkbox-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 6px;
+            gap: 4px;
             margin-top: 2px;
         }
 
         .checkbox-grid label {
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: rgba(255, 255, 255, 0.45);
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.4);
             font-family: 'Times New Roman', Times, serif;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
-            padding: 6px 10px;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
             transition: all 0.2s ease;
             text-transform: none;
             letter-spacing: 0;
@@ -332,15 +315,15 @@
 
         .checkbox-grid label:hover {
             background: rgba(255, 255, 255, 0.04);
-            color: rgba(255, 255, 255, 0.65);
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .checkbox-grid input[type="checkbox"] {
             appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border: 2px solid rgba(255, 255, 255, 0.12);
-            border-radius: 4px;
+            border-radius: 3px;
             background: transparent;
             cursor: pointer;
             position: relative;
@@ -360,23 +343,33 @@
             left: 50%;
             transform: translate(-50%, -50%);
             color: #1a1a2e;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
+        }
+
+        .section-title {
+            color: rgba(255, 255, 255, 0.25);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 14px 0 6px 0;
         }
 
         .btn-submit {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: linear-gradient(135deg, #a38a56, #8a7448);
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             color: #ffffff;
             font-family: 'Times New Roman', Times, serif;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 6px;
+            margin-top: 8px;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
@@ -391,83 +384,97 @@
             transform: translateY(0);
         }
 
-        .sub-label-text {
-            color: rgba(255, 255, 255, 0.3);
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.06), transparent);
+            margin: 18px 0;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-overlay .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #a38a56;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-overlay .loading-text {
+            color: #ffffff;
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12px;
-            margin-top: 4px;
-            letter-spacing: 1px;
+            font-size: 18px;
+            margin-top: 20px;
+            letter-spacing: 2px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Responsive */
         @media (max-width: 900px) {
-            .container {
-                flex-direction: column;
-                max-width: 600px;
-                min-height: auto;
-            }
-
-            .left-panel {
-                flex: unset;
-                border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-                padding: 30px 20px 25px;
-                min-height: auto;
-            }
-
-            .header-logo img {
-                height: 140px;
-            }
-
-            .motto {
-                font-size: 24px;
-                margin-bottom: 20px;
-            }
-
-            .right-panel {
-                padding: 25px 20px;
-            }
-
-            .form-row {
+            .two-col {
                 grid-template-columns: 1fr;
+                gap: 30px;
             }
-
-            .checkbox-grid {
-                grid-template-columns: 1fr 1fr;
+            .left-col .header-logo img {
+                height: 180px;
+            }
+            .container {
+                padding: 30px 25px;
+            }
+            .left-col .motto {
+                font-size: 20px;
             }
         }
 
         @media (max-width: 480px) {
-            .left-panel {
+            .container {
                 padding: 20px 15px;
             }
-
-            .header-logo img {
-                height: 100px;
+            .form-row {
+                grid-template-columns: 1fr;
             }
-
-            .motto {
-                font-size: 20px;
-                letter-spacing: 2px;
-            }
-
-            .right-panel {
-                padding: 20px 15px;
-            }
-
             .checkbox-grid {
                 grid-template-columns: 1fr 1fr;
             }
-
-            .upload-area {
-                padding: 20px 15px;
+            .left-col .header-logo img {
+                height: 120px;
+            }
+            .left-col .motto {
+                font-size: 18px;
             }
         }
+
     </style>
+
 </head>
 
 <body>
 
+    <!-- Scrolling Background -->
     <div class="bg-wrapper">
         <div class="bg-scroll" id="bgScroll">
             <img src="/static/sheet-bg.png" alt="Background">
@@ -475,94 +482,117 @@
         </div>
     </div>
 
+    <!-- Overlay for readability -->
     <div class="overlay-gradient"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">⏳ Processing ceremony...</div>
+    </div>
 
     <div class="container">
 
-        <!-- LEFT PANEL -->
-        <div class="left-panel">
-            <div class="header-logo">
-                <img src="/static/eagle.png" alt="Austrian Eagle" id="eagleLogo">
-            </div>
-            <div class="motto">Meritocracy Reigns Supreme.</div>
+        <!-- THE FORM NOW WRAPS BOTH COLUMNS -->
+        <form id="ceremonyForm" action="/generate" method="POST" enctype="multipart/form-data">
 
-            <div class="upload-area" id="dropZone">
-                <span class="upload-icon">📜</span>
-                <div class="label">Drop your .txt file here</div>
-                <div class="sub-label">or click to browse</div>
-                <input type="file" name="file" accept=".txt" required id="fileInput">
-                <div class="file-name" id="fileName">Selected: <span id="fileNameText"></span></div>
-            </div>
-        </div>
+            <div class="two-col">
 
-        <!-- RIGHT PANEL -->
-        <div class="right-panel">
-            <form action="/generate" method="POST" enctype="multipart/form-data" id="mainForm">
+                <!-- LEFT COLUMN - Eagle, Motto, Upload -->
+                <div class="left-col">
 
-                <div class="form-row">
+                    <div class="header-logo">
+                        <img src="/static/eagle.png" alt="Austrian Eagle" id="eagleLogo">
+                    </div>
+
+                    <div class="motto">Meritocracy Reigns Supreme.</div>
+
+                    <div class="upload-area" id="dropZone">
+                        <span class="upload-icon">📜</span>
+                        <div class="label">Drop your .txt file here</div>
+                        <div class="sub-label">or click to browse</div>
+                        <input type="file" name="file" accept=".txt" required="" id="fileInput">
+                        <div class="file-name" id="fileName">Selected: <span id="fileNameText"></span></div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT COLUMN - Form Fields -->
+                <div class="right-col">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Reason</label>
+                            <input type="text" name="reason" placeholder="e.g. Austrian Nation Wide">
+                        </div>
+                        <div class="form-group">
+                            <label>Logged By</label>
+                            <input type="text" name="logged_by" placeholder="Your Roblox Username">
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label>Reason</label>
-                        <input type="text" name="reason" placeholder="e.g. Campaign Medal">
+                        <label>Ceremony Format</label>
+                        <div class="toggle-group">
+                            <input type="radio" name="ceremony_type" value="eu_na" id="eu_na" checked="">
+                            <label for="eu_na">🌎 EU / NA</label>
+                            <input type="radio" name="ceremony_type" value="asia" id="asia">
+                            <label for="asia">🌏 Asia</label>
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label>Logged By</label>
-                        <input type="text" name="logged_by" placeholder="Your Roblox username">
+                        <label>Output Format</label>
+                        <div class="toggle-group">
+                            <input type="radio" name="output" value="excel" id="excel" checked="">
+                            <label for="excel">📊 Excel</label>
+                            <input type="radio" name="output" value="json" id="json">
+                            <label for="json">📋 JSON</label>
+                        </div>
                     </div>
+
+                    <div id="excel-options" style="display: block;">
+
+                        <div class="section-title">Exclude Clasps</div>
+
+                        <div style="color: rgba(255,255,255,0.25); font-family: 'Times New Roman', Times, serif; font-size: 11px; margin-bottom: 6px; letter-spacing: 1px;">Medals</div>
+                        <div class="checkbox-grid">
+                            <label><input type="checkbox" name="exclude_bronze"> Bronze</label>
+                            <label><input type="checkbox" name="exclude_silver"> Silver</label>
+                            <label><input type="checkbox" name="exclude_gold"> Gold</label>
+                            <label><input type="checkbox" name="exclude_no"> No Clasp</label>
+                        </div>
+
+                        <div style="color: rgba(255,255,255,0.25); font-family: 'Times New Roman', Times, serif; font-size: 11px; margin-top: 10px; margin-bottom: 6px; letter-spacing: 1px;">Orders</div>
+                        <div class="checkbox-grid">
+                            <label><input type="checkbox" name="exclude_knappe"> Knappe</label>
+                            <label><input type="checkbox" name="exclude_ritter"> Ritter</label>
+                            <label><input type="checkbox" name="exclude_kommandeur"> Kommandeur</label>
+                            <label><input type="checkbox" name="exclude_grossmeister"> Großmeister</label>
+                            <label><input type="checkbox" name="exclude_hochmeister"> Hochmeister</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">Generate</button>
+
                 </div>
 
-                <div class="form-group">
-                    <label>Ceremony Format</label>
-                    <div class="toggle-group">
-                        <input type="radio" name="ceremony_type" value="eu_na" id="eu_na" checked>
-                        <label for="eu_na">🌎 EU / NA</label>
-                        <input type="radio" name="ceremony_type" value="asia" id="asia">
-                        <label for="asia">🌏 Asia</label>
-                    </div>
-                </div>
+            </div>
 
-                <div class="form-group">
-                    <label>Output Format</label>
-                    <div class="toggle-group">
-                        <input type="radio" name="output" value="excel" id="excel" checked>
-                        <label for="excel">📊 Excel</label>
-                        <input type="radio" name="output" value="json" id="json">
-                        <label for="json">📋 JSON</label>
-                    </div>
-                </div>
-
-                <div id="excel-options">
-                    <div class="section-title">Exclude Clasps</div>
-                    <div class="sub-label-text">Medals</div>
-                    <div class="checkbox-grid">
-                        <label><input type="checkbox" name="exclude_bronze"> Bronze</label>
-                        <label><input type="checkbox" name="exclude_silver"> Silver</label>
-                        <label><input type="checkbox" name="exclude_gold"> Gold</label>
-                        <label><input type="checkbox" name="exclude_no"> No Clasp</label>
-                    </div>
-
-                    <div class="sub-label-text" style="margin-top: 10px;">Orders</div>
-                    <div class="checkbox-grid">
-                        <label><input type="checkbox" name="exclude_knappe"> Knappe</label>
-                        <label><input type="checkbox" name="exclude_ritter"> Ritter</label>
-                        <label><input type="checkbox" name="exclude_kommandeur"> Kommandeur</label>
-                        <label><input type="checkbox" name="exclude_grossmeister"> Großmeister</label>
-                        <label><input type="checkbox" name="exclude_hochmeister"> Hochmeister</label>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-submit">Generate</button>
-
-            </form>
-        </div>
+        </form>
 
     </div>
 
     <script>
-        // File upload handling
+
+        // File upload drag & drop
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const fileName = document.getElementById('fileName');
         const fileNameText = document.getElementById('fileNameText');
+        const form = document.getElementById('ceremonyForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
 
         dropZone.addEventListener('click', () => fileInput.click());
 
@@ -595,7 +625,7 @@
             }
         }
 
-        // Toggle excel options
+        // Toggle Excel options visibility
         const excelOptions = document.getElementById('excel-options');
         const outputButtons = document.querySelectorAll('input[name="output"]');
 
@@ -610,13 +640,33 @@
 
         updateOutputOptions();
 
-        // Eagle fallback
+        // Handle missing eagle image gracefully
         document.getElementById('eagleLogo').addEventListener('error', function() {
             this.style.display = 'none';
         });
 
-        // The background scrolling code that paused on hover has been REMOVED
-        // as requested - background now scrolls continuously
+        // Show loading overlay on form submit
+        form.addEventListener('submit', function(e) {
+            // Check if a file is selected
+            if (!fileInput.files.length) {
+                e.preventDefault();
+                alert('Please select a file first.');
+                return;
+            }
+
+            // Show loading overlay
+            loadingOverlay.classList.add('show');
+            submitBtn.disabled = true;
+        });
+
+        // Hide loading overlay if the user navigates back (in case of error)
+        window.addEventListener('pageshow', function() {
+            loadingOverlay.classList.remove('show');
+            submitBtn.disabled = false;
+        });
+
+        // Background scrolls continuously - no pause on hover!
+
     </script>
 
 </body>

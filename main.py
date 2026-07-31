@@ -28,12 +28,18 @@ def process_file(
     reason="",
     logged_by="",
     exclude_clasps=None,
+    ceremony_type="eu_na",
 ):
     print(f"Reading {input_file.name}")
 
     text = input_file.read_text(encoding="utf-8")
+    
+    if ceremony_type == "asia":
+        from parser_asia import parse_document
+    else:
+        from parser import parse_document
+    
     rows, skipped = parse_document(text, exclude_clasps or {})
-
     print("\nResolving Roblox profiles...\n")
 
     failed = 0

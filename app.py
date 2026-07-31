@@ -54,6 +54,11 @@ def generate():
         ""
     ).strip()
 
+    ceremony_type = request.form.get(
+        "ceremony_type",
+        "eu_na"
+    )
+
     exclude_clasps = {
     
         "Bronze": "exclude_bronze" in request.form,
@@ -81,6 +86,7 @@ def generate():
         reason=reason,
         logged_by=logged_by,
         exclude_clasps=exclude_clasps,
+        ceremony_type=ceremony_type,
     )
 
     try:

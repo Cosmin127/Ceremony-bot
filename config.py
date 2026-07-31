@@ -1,4 +1,4 @@
-# in regiment map, you put the shortened tags of the regiments you're going to log medals for, then put their full name from the sheet. Example:
+
 
 REGIMENT_MAP = {
     "MO": "Esercito Ducale di Modena",
@@ -29,8 +29,6 @@ REGIMENT_MAP = {
     "IF": "Artillery",
     
 }
-
-# in MEDAL_HEADER_MAP it's mostly the same thing. You go see the exact wording of the medals in the ceremony document, then put the names of the medals inside the google sheet. Example:
 
 MEDAL_HEADER_MAP = {
     "AWARDED MEDAL OF EXCELLENCE":
@@ -85,12 +83,61 @@ MEDAL_HEADER_MAP = {
         "Ordn der Eisernen Krone",
 }
 
-# When medals with higher clasps are given, you just manually change the clasp in the google sheet, so with this the algorithm will ignore people who got medals with clasps higher than bronze, except social medals which only have silver.
-
-IGNORE_CLASPS = {
-    
+KORPS_MAP = {
+    "KÖNIGLICHE UNGARN": "Königliche Ungarn",
+    "K.U.": "Königliche Ungarn", 
+    "ERSTE KORPS": "Erste Korps",
+    "ZWEITE KORPS": "Zweite Korps",
+    "DRITTE KORPS": "Drittes Korps",
+    "FÜNFTES KORPS": "Fünftes Korps",
 }
 
-# Self explanatory no?
+REGIMENT_MAP_BY_KORPS = {
+    "Königliche Ungarn": {
+        "AG": "Alte Grenadiere",
+        "JG": "Junge Grenadiere",
+        "MG": "Alte Grenadière",
+        "GS": "", 
+        "GR": "Grenz Infanterie",
+        "UH": "Kaiserliche Husaren",
+        "RH": "Kaiserliche Ulanen",
+        "LG": "Kaiserliche Leibgarde",
+        "HFA": "Artillery",
+        "ARTY": "Artillery",  
+    },
+    "Erste Korps": {
+        "GS": "",
+        "NR.1": 'NR.1 "Kaiser Franz"',
+        "NR.4": 'NR.4 "Deutschmeister"',
+        "WUR": "Kurfürstentum Württemberg",
+        "ARTY": "Artillery",
+       
+    },
+    "Zweite Korps": {
+        "GS": "",
+        "NR.59": 'NR.59 "Jordis"',
+        "NR.25": 'NR.25 "Graf Sporck"',
+        "LEK": "Legion Erzherzog Karl",
+        "ARTY": "Artillery",
+    },
+    "Drittes Korps": {
+        "GS": "",
+        "NR.38": 'NR.38 "Freiherr von Prohaska"',
+        "NR.49": 'NR.49 "von Kerpen"',
+        "TR": "Trieste Freikorps",
+        "IF": "Artillery", 
+        "ARTY": "Artillery", 
+    },
+    "Fünftes Korps": {
+        "GS": "",
+        "MO": "Esercito Ducale di Modena",
+        "Nr.16": 'NR.16 "Lusignan"',
+        "Nr.9": 'Nr.9 "Fürst Czartoryski"',
+        "TFA": "Artillery",
+        "UH": "Kavallerie",
+        "CAV": "Kavallerie",
+        "V": "", 
+        "ARTY": "Artillery",
+    },
+}
 
-LOGGED_BY = "Cosmin_dEste"

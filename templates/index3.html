@@ -29,7 +29,7 @@
             background: #0a0a12;
         }
 
-        /* Scrolling background */
+
         .bg-wrapper {
             position: fixed;
             top: 0;
@@ -109,7 +109,7 @@
             align-items: start;
         }
 
-        /* LEFT COLUMN - Eagle, Motto, Upload */
+
         .left-col {
             display: flex;
             flex-direction: column;
@@ -203,7 +203,7 @@
             color: #a38a56;
         }
 
-        /* RIGHT COLUMN - Form Fields */
+   
         .right-col {
             padding-top: 10px;
         }
@@ -390,7 +390,7 @@
             margin: 18px 0;
         }
 
-        /* Loading Overlay */
+       
         .loading-overlay {
             display: none;
             position: fixed;
@@ -433,7 +433,7 @@
             }
         }
 
-        /* Responsive */
+     
         @media (max-width: 900px) {
             .two-col {
                 grid-template-columns: 1fr;
@@ -474,7 +474,7 @@
 
 <body>
 
-    <!-- Scrolling Background -->
+
     <div class="bg-wrapper">
         <div class="bg-scroll" id="bgScroll">
             <img src="/static/sheet-bg.png" alt="Background">
@@ -482,10 +482,10 @@
         </div>
     </div>
 
-    <!-- Overlay for readability -->
+  
     <div class="overlay-gradient"></div>
 
-    <!-- Loading Overlay -->
+
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
         <div class="loading-text">⏳ Processing ceremony...</div>
@@ -493,12 +493,12 @@
 
     <div class="container">
 
-        <!-- THE FORM NOW WRAPS BOTH COLUMNS -->
+  
         <form id="ceremonyForm" action="/generate" method="POST" enctype="multipart/form-data">
 
             <div class="two-col">
 
-                <!-- LEFT COLUMN - Eagle, Motto, Upload -->
+      
                 <div class="left-col">
 
                     <div class="header-logo">
@@ -517,7 +517,7 @@
 
                 </div>
 
-                <!-- RIGHT COLUMN - Form Fields -->
+
                 <div class="right-col">
 
                     <div class="form-row">
@@ -585,7 +585,7 @@
 
     <script>
 
-        // File upload drag & drop
+  
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
         const fileName = document.getElementById('fileName');
@@ -625,7 +625,7 @@
             }
         }
 
-        // Toggle Excel options visibility
+
         const excelOptions = document.getElementById('excel-options');
         const outputButtons = document.querySelectorAll('input[name="output"]');
 
@@ -640,39 +640,38 @@
 
         updateOutputOptions();
 
-        // Handle missing eagle image gracefully
+
         document.getElementById('eagleLogo').addEventListener('error', function() {
             this.style.display = 'none';
         });
 
-        // Show loading overlay on form submit
+
         form.addEventListener('submit', function(e) {
-            // Check if a file is selected
+
             if (!fileInput.files.length) {
                 e.preventDefault();
                 alert('Please select a file first.');
                 return;
             }
 
-            // Show loading overlay
+       
             loadingOverlay.classList.add('show');
             submitBtn.disabled = true;
 
-            // Auto-hide after 3 seconds (enough time for processing + download to start)
-            // The download should trigger within this time
+     
             setTimeout(function() {
                 loadingOverlay.classList.remove('show');
                 submitBtn.disabled = false;
             }, 3000);
         });
 
-        // Hide loading overlay if the user navigates back (in case of error)
+
         window.addEventListener('pageshow', function() {
             loadingOverlay.classList.remove('show');
             submitBtn.disabled = false;
         });
 
-        // Background scrolls continuously - no pause on hover!
+     
 
     </script>
 

@@ -88,6 +88,24 @@
 
         }
 
+        #excel-options {
+
+            text-align: left;
+
+            margin-top: 20px;
+
+        }
+
+        #excel-options input {
+
+            width: 100%;
+
+            padding: 8px;
+
+            box-sizing: border-box;
+
+        }
+
         button {
 
             margin-top: 30px;
@@ -168,6 +186,34 @@
 
         </div>
 
+        <div id="excel-options">
+
+            <h3>Excel options</h3>
+
+            <label for="reason">
+                Reason
+            </label>
+
+            <input
+                type="text"
+                id="reason"
+                name="reason"
+                placeholder="Reason">
+
+            <br><br>
+
+            <label for="logged_by">
+                Logged By
+            </label>
+
+            <input
+                type="text"
+                id="logged_by"
+                name="logged_by"
+                placeholder="Your name">
+
+        </div>
+
         <button type="submit">
 
             Generate
@@ -177,6 +223,38 @@
     </form>
 
 </div>
+
+<script>
+
+const excelOptions = document.getElementById("excel-options");
+
+const outputButtons = document.querySelectorAll('input[name="output"]');
+
+function updateOutputOptions() {
+
+    const selected = document.querySelector('input[name="output"]:checked').value;
+
+    if (selected === "excel") {
+
+        excelOptions.style.display = "block";
+
+    } else {
+
+        excelOptions.style.display = "none";
+
+    }
+
+}
+
+outputButtons.forEach(button => {
+
+    button.addEventListener("change", updateOutputOptions);
+
+});
+
+updateOutputOptions();
+
+</script>
 
 </body>
 

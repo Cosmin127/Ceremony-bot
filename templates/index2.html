@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en">
+
+<head>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,16 +18,70 @@
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 30px;
             margin: 0;
+            position: relative;
+            overflow: hidden;
+            background: #0a0a12;
+        }
+
+        /* Scrolling background */
+        .bg-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            filter: blur(8px) brightness(0.4);
+            transform: scale(1.1);
+        }
+
+        .bg-scroll {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            animation: scrollBackground 30s linear infinite;
+        }
+
+        .bg-scroll img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Duplicate the image for seamless loop */
+        .bg-scroll .duplicate {
+            margin-top: 0;
+        }
+
+        @keyframes scrollBackground {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-50%);
+            }
+        }
+
+        /* Overlay gradient to ensure readability */
+        .overlay-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: radial-gradient(ellipse at center, rgba(10, 10, 18, 0.3) 0%, rgba(10, 10, 18, 0.7) 100%);
         }
 
         .container {
+            position: relative;
+            z-index: 2;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -35,7 +91,6 @@
             width: 100%;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-            position: relative;
             overflow: hidden;
         }
 
@@ -76,15 +131,6 @@
             letter-spacing: 4px;
             margin-top: 8px;
             text-shadow: 0 0 40px rgba(163, 138, 86, 0.15);
-        }
-
-        .header .sub-motto {
-            color: rgba(255, 255, 255, 0.25);
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 13px;
-            letter-spacing: 6px;
-            margin-top: 4px;
-            text-transform: uppercase;
         }
 
         .upload-area {
@@ -331,21 +377,6 @@
             color: #a38a56;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .footer .motto {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.15);
-            font-family: 'Times New Roman', Times, serif;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
         @media (max-width: 480px) {
             .container {
                 padding: 30px 20px;
@@ -371,152 +402,170 @@
 
 <body>
 
-<div class="container">
+  
+    <div class="bg-wrapper">
+        <div class="bg-scroll" id="bgScroll">
+            <img src="/static/sheet-bg.png" alt="Background">
+            <img src="/static/sheet-bg.png" alt="Background" class="duplicate">
+        </div>
+    </div>
 
-    <div class="header">
 
-        <div class="header-logo">
-            <img src="/static/eagle.png" alt="Austrian Eagle" id="eagleLogo">
+    <div class="overlay-gradient"></div>
+
+    <div class="container">
+
+        <div class="header">
+
+            <div class="header-logo">
+                <img src="/static/eagle.png" alt="Austrian Eagle" id="eagleLogo">
+            </div>
+
+            <div class="motto">Meritocracy Reigns Supreme.</div>
+
         </div>
 
-        <div class="motto">Meritocracy Reigns Supreme.</div>
-        
+        <form action="/generate" method="POST" enctype="multipart/form-data">
+
+            <div class="upload-area" id="dropZone">
+                <span class="upload-icon">📜</span>
+                <div class="label">Drop your .txt file here</div>
+                <div class="sub-label">or click to browse</div>
+                <input type="file" name="file" accept=".txt" required="" id="fileInput">
+                <div class="file-name" id="fileName">Selected: <span id="fileNameText"></span></div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Reason</label>
+                    <input type="text" name="reason" placeholder="e.g. Campaign Medal">
+                </div>
+                <div class="form-group">
+                    <label>Logged By</label>
+                    <input type="text" name="logged_by" placeholder="Your Roblox username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Ceremony Format</label>
+                <div class="toggle-group">
+                    <input type="radio" name="ceremony_type" value="eu_na" id="eu_na" checked="">
+                    <label for="eu_na">🌎 EU / NA</label>
+                    <input type="radio" name="ceremony_type" value="asia" id="asia">
+                    <label for="asia">🌏 Asia</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Output Format</label>
+                <div class="toggle-group">
+                    <input type="radio" name="output" value="excel" id="excel" checked="">
+                    <label for="excel">📊 Excel</label>
+                    <input type="radio" name="output" value="json" id="json">
+                    <label for="json">📋 JSON</label>
+                </div>
+            </div>
+
+            <div id="excel-options" style="display: block;">
+
+                <div class="section-title">Exclude Clasps</div>
+
+                <div style="color: rgba(255,255,255,0.3); font-family: 'Times New Roman', Times, serif; font-size: 12px; margin-bottom: 10px; letter-spacing: 1px;">Medals</div>
+                <div class="checkbox-grid">
+                    <label><input type="checkbox" name="exclude_bronze"> Bronze</label>
+                    <label><input type="checkbox" name="exclude_silver"> Silver</label>
+                    <label><input type="checkbox" name="exclude_gold"> Gold</label>
+                    <label><input type="checkbox" name="exclude_no"> No Clasp</label>
+                </div>
+
+                <div style="color: rgba(255,255,255,0.3); font-family: 'Times New Roman', Times, serif; font-size: 12px; margin-top: 12px; margin-bottom: 10px; letter-spacing: 1px;">Orders</div>
+                <div class="checkbox-grid">
+                    <label><input type="checkbox" name="exclude_knappe"> Knappe</label>
+                    <label><input type="checkbox" name="exclude_ritter"> Ritter</label>
+                    <label><input type="checkbox" name="exclude_kommandeur"> Kommandeur</label>
+                    <label><input type="checkbox" name="exclude_grossmeister"> Großmeister</label>
+                    <label><input type="checkbox" name="exclude_hochmeister"> Hochmeister</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Generate</button>
+
+        </form>
 
     </div>
 
-    <form action="/generate" method="POST" enctype="multipart/form-data">
+    <script>
 
-        <div class="upload-area" id="dropZone">
-            <span class="upload-icon">📜</span>
-            <div class="label">Drop your .txt file here</div>
-            <div class="sub-label">or click to browse</div>
-            <input type="file" name="file" accept=".txt" required="" id="fileInput">
-            <div class="file-name" id="fileName">Selected: <span id="fileNameText"></span></div>
-        </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label>Reason</label>
-                <input type="text" name="reason" placeholder="e.g. Campaign Medal">
-            </div>
-            <div class="form-group">
-                <label>Logged By</label>
-                <input type="text" name="logged_by" placeholder="Your Roblox username">
-            </div>
-        </div>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const fileNameText = document.getElementById('fileNameText');
 
-        <div class="form-group">
-            <label>Ceremony Format</label>
-            <div class="toggle-group">
-                <input type="radio" name="ceremony_type" value="eu_na" id="eu_na" checked="">
-                <label for="eu_na">🌎 EU / NA</label>
-                <input type="radio" name="ceremony_type" value="asia" id="asia">
-                <label for="asia">🌏 Asia</label>
-            </div>
-        </div>
+        dropZone.addEventListener('click', () => fileInput.click());
 
-        <div class="form-group">
-            <label>Output Format</label>
-            <div class="toggle-group">
-                <input type="radio" name="output" value="excel" id="excel" checked="">
-                <label for="excel">📊 Excel</label>
-                <input type="radio" name="output" value="json" id="json">
-                <label for="json">📋 JSON</label>
-            </div>
-        </div>
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
 
-        <div id="excel-options" style="display: block;">
-            
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
 
-            <div class="section-title">Exclude Clasps</div>
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileName();
+            }
+        });
 
-            <div style="color: rgba(255,255,255,0.3); font-family: 'Times New Roman', Times, serif; font-size: 12px; margin-bottom: 10px; letter-spacing: 1px;">Medals</div>
-            <div class="checkbox-grid">
-                <label><input type="checkbox" name="exclude_bronze"> Bronze</label>
-                <label><input type="checkbox" name="exclude_silver"> Silver</label>
-                <label><input type="checkbox" name="exclude_gold"> Gold</label>
-                <label><input type="checkbox" name="exclude_no"> No Clasp</label>
-            </div>
+        fileInput.addEventListener('change', updateFileName);
 
-            <div style="color: rgba(255,255,255,0.3); font-family: 'Times New Roman', Times, serif; font-size: 12px; margin-top: 12px; margin-bottom: 10px; letter-spacing: 1px;">Orders</div>
-            <div class="checkbox-grid">
-                <label><input type="checkbox" name="exclude_knappe"> Knappe</label>
-                <label><input type="checkbox" name="exclude_ritter"> Ritter</label>
-                <label><input type="checkbox" name="exclude_kommandeur"> Kommandeur</label>
-                <label><input type="checkbox" name="exclude_grossmeister"> Großmeister</label>
-                <label><input type="checkbox" name="exclude_hochmeister"> Hochmeister</label>
-            </div>
-        </div>
-
-        <button type="submit" class="btn-submit">Generate</button>
-
-    </form>
-
-    
-
-</div>
-
-<script>
-
-    // File upload drag & drop
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const fileName = document.getElementById('fileName');
-    const fileNameText = document.getElementById('fileNameText');
-
-    dropZone.addEventListener('click', () => fileInput.click());
-
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        if (e.dataTransfer.files.length) {
-            fileInput.files = e.dataTransfer.files;
-            updateFileName();
+        function updateFileName() {
+            if (fileInput.files.length) {
+                fileNameText.textContent = fileInput.files[0].name;
+                fileName.classList.add('show');
+            } else {
+                fileName.classList.remove('show');
+            }
         }
-    });
 
-    fileInput.addEventListener('change', updateFileName);
 
-    function updateFileName() {
-        if (fileInput.files.length) {
-            fileNameText.textContent = fileInput.files[0].name;
-            fileName.classList.add('show');
-        } else {
-            fileName.classList.remove('show');
+        const excelOptions = document.getElementById('excel-options');
+        const outputButtons = document.querySelectorAll('input[name="output"]');
+
+        function updateOutputOptions() {
+            const selected = document.querySelector('input[name="output"]:checked');
+            excelOptions.style.display = selected && selected.value === 'excel' ? 'block' : 'none';
         }
-    }
 
-    // Toggle Excel options visibility
-    const excelOptions = document.getElementById('excel-options');
-    const outputButtons = document.querySelectorAll('input[name="output"]');
+        outputButtons.forEach(button => {
+            button.addEventListener('change', updateOutputOptions);
+        });
 
-    function updateOutputOptions() {
-        const selected = document.querySelector('input[name="output"]:checked');
-        excelOptions.style.display = selected && selected.value === 'excel' ? 'block' : 'none';
-    }
+        updateOutputOptions();
 
-    outputButtons.forEach(button => {
-        button.addEventListener('change', updateOutputOptions);
-    });
-
-    updateOutputOptions();
-
-    // Handle missing eagle image gracefully
-    document.getElementById('eagleLogo').addEventListener('error', function() {
-        this.style.display = 'none';
-    });
-
-</script>
+        document.getElementById('eagleLogo').addEventListener('error', function() {
+            this.style.display = 'none';
+        });
 
 
+        const container = document.querySelector('.container');
+        const bgScroll = document.getElementById('bgScroll');
 
-</body></html>
+        container.addEventListener('mouseenter', () => {
+            bgScroll.style.animationPlayState = 'paused';
+        });
+
+        container.addEventListener('mouseleave', () => {
+            bgScroll.style.animationPlayState = 'running';
+        });
+
+    </script>
+
+</body>
+
+</html>

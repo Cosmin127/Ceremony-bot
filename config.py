@@ -37,10 +37,10 @@ MEDAL_HEADER_MAP = {
         "Exzellenz Kampfkruiz",
 
     "AWARDED MEDAL OF VALOR":
-        "Tapferkeit Verdienstmedaille",
+        "Heldenmut Verdienstmedaille",
 
     "AWARDED MEDAL OF BRAVERY":
-        "Heldenmut Verdienstmedaille",
+        "Tapferkeit Verdienstmedaille",
 
     "AWARDED CHAPLAIN'S MEDAL":
         "Kaplan Verdienstkruiz",

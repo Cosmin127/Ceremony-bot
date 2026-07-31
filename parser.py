@@ -36,7 +36,14 @@ def parse_document(text):
             continue
 
         if current_medal is not None and not LINE_RE.match(line):
-            current_medal = None
+        
+            if (
+                line.startswith("_")
+                or line.startswith("-")
+                or line.isupper()
+            ):
+                current_medal = None
+        
             continue
 
         if current_medal is None:

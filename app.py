@@ -43,6 +43,16 @@ def generate():
         "output",
         "excel"
     )
+    
+    reason = request.form.get(
+        "reason",
+        ""
+    ).strip()
+    
+    logged_by = request.form.get(
+        "logged_by",
+        ""
+    ).strip()
 
     extension = Path(file.filename).suffix.lower()
 
@@ -52,7 +62,9 @@ def generate():
 
     output_file = process_file(
         upload_path,
-        output=output_type
+        output=output_type,
+        reason=reason,
+        logged_by=logged_by,
     )
 
     try:

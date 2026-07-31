@@ -13,7 +13,13 @@ LINE_RE = re.compile(
 )
 
 
-def parse_document(text):
+def parse_document(
+    text,
+    exclude_clasps=None,
+):
+
+    if exclude_clasps is None:
+        exclude_clasps = {}
 
     rows = []
 
@@ -66,23 +72,35 @@ def parse_document(text):
         clasp = re.sub(r"\s+medal\b", "", clasp, flags=re.IGNORECASE)
         
         clasp = re.sub(r"[.,;:]+$", "", clasp)
-    
+        
         clasp = re.sub(r"\s+", " ", clasp).strip()
         
         clasp = clasp.title()
+        
 
-        if clasp not in (
+        
+        if clasp in ("No", "No Clasp"):
+            clasp = "Silber"
+        
+        elif clasp == "Silver":
+            clasp = "Silber"
+
+        valid_clasps = (
+        
             "Bronze",
-            "Silver",
             "Silber",
             "Gold",
+        
             "Großmeister",
             "Kommandeur",
             "Ritter",
             "Hochmeister",
             "Knappe",
-            "No",
-        ):
+        
+        )
+        
+        if clasp not in valid_clasps:
+            
             skipped.append(
                 {
                     "user": username,
@@ -96,7 +114,37 @@ def parse_document(text):
             )
 
             continue
-
+        
+        original_clasp = clasp
+        
+        if clasp == "Silber":
+        
+            #
+            # Social medals ("No Clasp") become Silber,
+            # but still obey the No Clasp checkbox.
+            #
+        
+            if re.search(
+                r"\bno\b",
+                m.group(3),
+                flags=re.IGNORECASE,
+            ):
+        
+                if exclude_clasps.get("No Clasp", False):
+        
+                    print(f"Excluded {username} (No Clasp)")
+                    continue
+        
+            elif exclude_clasps.get("Silver", False):
+        
+                print(f"Excluded {username} (Silver)")
+                continue
+        
+        elif exclude_clasps.get(clasp, False):
+        
+            print(f"Excluded {username} ({clasp})")
+            continue
+        
         regiment = REGIMENT_MAP.get(
             regiment_tag,
             ""

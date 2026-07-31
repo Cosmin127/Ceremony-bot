@@ -60,6 +60,9 @@ MEDAL_HEADER_MAP = {
 
     "GRENADIER KORP MEDALS":
         "Grenadier Korps Ehrenkruiz",
+
+    "AWARDED GRENADIER KORP MEDALS":
+        "Grenadier Korps Ehrenkruiz",
     
     "AWARDED ORDER OF THE GOLDEN FLEECE": 
         "Ordn des Goldenen Vlies",

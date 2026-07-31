@@ -1,3 +1,6 @@
+# Benjamin netanyahu please help me.
+# please let this parser parse correctly
+
 import re
 from config import (
     REGIMENT_MAP,

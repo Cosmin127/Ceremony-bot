@@ -1,605 +1,624 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ceremony Bot</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceremony Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Times New Roman', Times, serif;
-      min-height: 100vh;
-      background: #0a0a12;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+            background: #0a0a12;
+        }
 
-    /* --- scrolling background (monitor friendly) --- */
-    .bg-wrapper {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
-      filter: blur(8px) brightness(0.4);
-      transform: scale(1.1);
-    }
+        /* Scrolling background */
+        .bg-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            filter: blur(8px) brightness(0.4);
+            transform: scale(1.1);
+        }
 
-    .bg-scroll {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      animation: scrollBackground 30s linear infinite;
-    }
+        .bg-scroll {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            animation: scrollBackground 30s linear infinite;
+        }
 
-    .bg-scroll img {
-      width: 100%;
-      display: block;
-    }
+        .bg-scroll img {
+            width: 100%;
+            display: block;
+        }
 
-    .bg-scroll .duplicate {
-      margin-top: 0;
-    }
+        .bg-scroll .duplicate {
+            margin-top: 0;
+        }
 
-    @keyframes scrollBackground {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-50%); }
-    }
+        @keyframes scrollBackground {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(-50%);
+            }
+        }
 
-    .overlay-gradient {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      background: radial-gradient(ellipse at center, rgba(10, 10, 18, 0.3) 0%, rgba(10, 10, 18, 0.7) 100%);
-    }
+        .overlay-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: radial-gradient(ellipse at center, rgba(10, 10, 18, 0.3) 0%, rgba(10, 10, 18, 0.7) 100%);
+        }
 
-    /* --- main container: horizontal split --- */
-    .container {
-      position: relative;
-      z-index: 2;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-      display: flex;
-      flex-direction: row;
-      max-width: 1300px;
-      width: 100%;
-      overflow: hidden;
-      transition: all 0.2s;
-    }
+        /* Main container - side by side */
+        .container {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: row;
+            max-width: 1200px;
+            width: 100%;
+            overflow: hidden;
+            min-height: 600px;
+        }
 
-    /* decorative top border (moved to left panel) */
-    .container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #a38a56, #d4b87a, #a38a56);
-      z-index: 5;
-      opacity: 0.6;
-    }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #a38a56, transparent);
+            z-index: 10;
+        }
 
-    /* --- LEFT PANEL: eagle, motto, drag box --- */
-    .left-panel {
-      flex: 0 0 360px;
-      min-width: 280px;
-      padding: 40px 28px 36px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.2);
-      border-right: 1px solid rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(4px);
-    }
+        /* LEFT PANEL - eagle, motto, file upload */
+        .left-panel {
+            flex: 0 0 340px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 100%;
+        }
 
-    .header-logo img {
-      height: 200px;
-      width: auto;
-      opacity: 0.95;
-      filter: drop-shadow(0 0 20px rgba(163, 138, 86, 0.15));
-      display: block;
-      margin: 0 auto 12px;
-    }
+        .header-logo img {
+            height: 200px;
+            width: auto;
+            opacity: 0.95;
+            display: block;
+            margin: 0 auto 15px;
+        }
 
-    .motto {
-      color: #a38a56;
-      font-size: 30px;
-      font-weight: 700;
-      letter-spacing: 5px;
-      text-shadow: 0 0 40px rgba(163, 138, 86, 0.15);
-      text-align: center;
-      margin-bottom: 32px;
-      line-height: 1.2;
-      font-family: 'Times New Roman', Times, serif;
-    }
+        .motto {
+            color: #a38a56;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-align: center;
+            text-shadow: 0 0 40px rgba(163, 138, 86, 0.15);
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
 
-    .upload-area {
-      width: 100%;
-      border: 2px dashed rgba(255, 255, 255, 0.12);
-      border-radius: 18px;
-      padding: 32px 16px;
-      text-align: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.02);
-      margin-top: 8px;
-    }
+        .upload-area {
+            width: 100%;
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.02);
+        }
 
-    .upload-area:hover {
-      border-color: rgba(163, 138, 86, 0.4);
-      background: rgba(255, 255, 255, 0.04);
-    }
+        .upload-area:hover {
+            border-color: rgba(163, 138, 86, 0.4);
+            background: rgba(255, 255, 255, 0.04);
+        }
 
-    .upload-area input[type="file"] {
-      display: none;
-    }
+        .upload-area input[type="file"] {
+            display: none;
+        }
 
-    .upload-icon {
-      font-size: 44px;
-      margin-bottom: 8px;
-      display: block;
-      opacity: 0.7;
-    }
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+            display: block;
+            opacity: 0.7;
+        }
 
-    .upload-area .label {
-      color: #ffffff;
-      font-size: 18px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-    }
+        .upload-area .label {
+            color: #ffffff;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 16px;
+            font-weight: 500;
+        }
 
-    .upload-area .sub-label {
-      color: rgba(255, 255, 255, 0.3);
-      font-size: 14px;
-      margin-top: 6px;
-    }
+        .upload-area .sub-label {
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13px;
+            margin-top: 6px;
+        }
 
-    .upload-area.dragover {
-      border-color: #a38a56;
-      background: rgba(163, 138, 86, 0.06);
-    }
+        .upload-area.dragover {
+            border-color: #a38a56;
+            background: rgba(163, 138, 86, 0.06);
+        }
 
-    .file-name {
-      color: rgba(255, 255, 255, 0.4);
-      font-size: 14px;
-      margin-top: 12px;
-      display: none;
-    }
+        .file-name {
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
 
-    .file-name.show {
-      display: block;
-    }
+        .file-name.show {
+            display: block;
+        }
 
-    .file-name span {
-      color: #a38a56;
-      font-weight: 600;
-    }
+        .file-name span {
+            color: #a38a56;
+        }
 
-    /* --- RIGHT PANEL: all form elements --- */
-    .right-panel {
-      flex: 1;
-      padding: 36px 40px 40px 40px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-    }
+        /* RIGHT PANEL - all form fields */
+        .right-panel {
+            flex: 1;
+            padding: 40px 40px 40px 35px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .right-panel form {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
+        .right-panel form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+        }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-    }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
 
-    .form-group label {
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-family: 'Times New Roman', Times, serif;
-    }
+        .form-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 2px;
+        }
 
-    .form-group input[type="text"] {
-      width: 100%;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      color: #ffffff;
-      font-size: 15px;
-      transition: all 0.3s ease;
-      outline: none;
-      font-family: 'Times New Roman', Times, serif;
-    }
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: #ffffff;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
 
-    .form-group input[type="text"]:focus {
-      border-color: #a38a56;
-      background: rgba(255, 255, 255, 0.07);
-      box-shadow: 0 0 20px rgba(163, 138, 86, 0.05);
-    }
+        .form-group input[type="text"]:focus {
+            border-color: #a38a56;
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 20px rgba(163, 138, 86, 0.05);
+        }
 
-    .form-group input[type="text"]::placeholder {
-      color: rgba(255, 255, 255, 0.2);
-    }
+        .form-group input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
 
-    .toggle-group {
-      display: flex;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 4px;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
+        .toggle-group {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
 
-    .toggle-group label {
-      flex: 1;
-      text-align: center;
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.35);
-      transition: all 0.3s ease;
-      text-transform: none;
-      letter-spacing: 0;
-      font-family: 'Times New Roman', Times, serif;
-    }
+        .toggle-group label {
+            flex: 1;
+            text-align: center;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.35);
+            transition: all 0.3s ease;
+            text-transform: none;
+            letter-spacing: 0;
+        }
 
-    .toggle-group label:hover {
-      color: rgba(255, 255, 255, 0.7);
-    }
+        .toggle-group label:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
 
-    .toggle-group input[type="radio"] {
-      display: none;
-    }
+        .toggle-group input[type="radio"] {
+            display: none;
+        }
 
-    .toggle-group input[type="radio"]:checked + label {
-      background: rgba(163, 138, 86, 0.12);
-      color: #a38a56;
-      box-shadow: 0 4px 12px rgba(163, 138, 86, 0.06);
-    }
+        .toggle-group input[type="radio"]:checked+label {
+            background: rgba(163, 138, 86, 0.12);
+            color: #a38a56;
+            box-shadow: 0 4px 12px rgba(163, 138, 86, 0.06);
+        }
 
-    .section-title {
-      color: rgba(255, 255, 255, 0.3);
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin: 4px 0 6px 0;
-      font-family: 'Times New Roman', Times, serif;
-    }
+        .section-title {
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 8px 0 4px 0;
+        }
 
-    .checkbox-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      margin: 2px 0 4px;
-    }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-top: 2px;
+        }
 
-    .checkbox-grid label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: rgba(255, 255, 255, 0.45);
-      font-size: 14px;
-      cursor: pointer;
-      padding: 6px 10px;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      text-transform: none;
-      letter-spacing: 0;
-      font-weight: 400;
-      font-family: 'Times New Roman', Times, serif;
-    }
+        .checkbox-grid label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.45);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 400;
+        }
 
-    .checkbox-grid label:hover {
-      background: rgba(255, 255, 255, 0.04);
-      color: rgba(255, 255, 255, 0.7);
-    }
+        .checkbox-grid label:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.65);
+        }
 
-    .checkbox-grid input[type="checkbox"] {
-      appearance: none;
-      width: 17px;
-      height: 17px;
-      border: 2px solid rgba(255, 255, 255, 0.12);
-      border-radius: 5px;
-      background: transparent;
-      cursor: pointer;
-      position: relative;
-      flex-shrink: 0;
-      transition: all 0.2s ease;
-    }
+        .checkbox-grid input[type="checkbox"] {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
 
-    .checkbox-grid input[type="checkbox"]:checked {
-      background: #a38a56;
-      border-color: #a38a56;
-    }
+        .checkbox-grid input[type="checkbox"]:checked {
+            background: #a38a56;
+            border-color: #a38a56;
+        }
 
-    .checkbox-grid input[type="checkbox"]:checked::after {
-      content: "✓";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #1a1a2e;
-      font-size: 12px;
-      font-weight: 700;
-    }
+        .checkbox-grid input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #1a1a2e;
+            font-size: 11px;
+            font-weight: 700;
+        }
 
-    .btn-submit {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, #a38a56, #7a653f);
-      border: none;
-      border-radius: 14px;
-      color: #ffffff;
-      font-size: 20px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 6px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-family: 'Times New Roman', Times, serif;
-      box-shadow: 0 4px 16px rgba(163, 138, 86, 0.15);
-    }
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #a38a56, #8a7448);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 6px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
 
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(163, 138, 86, 0.25);
-      background: linear-gradient(135deg, #b89a64, #a38a56);
-    }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(163, 138, 86, 0.2);
+            background: linear-gradient(135deg, #b89a64, #a38a56);
+        }
 
-    .btn-submit:active {
-      transform: translateY(0);
-    }
+        .btn-submit:active {
+            transform: translateY(0);
+        }
 
-    .divider {
-      height: 1px;
-      background: linear-gradient(to right, transparent, rgba(255,255,255,0.06), transparent);
-      margin: 4px 0 6px;
-    }
+        .sub-label-text {
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 12px;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
 
-    #excel-options {
-      margin-top: 2px;
-    }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                max-width: 600px;
+                min-height: auto;
+            }
 
-    /* small adjustments */
-    .right-panel .form-group:last-of-type {
-      margin-bottom: 0;
-    }
+            .left-panel {
+                flex: unset;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                padding: 30px 20px 25px;
+                min-height: auto;
+            }
 
-    @media (max-width: 900px) {
-      .container {
-        flex-direction: column;
-        max-width: 600px;
-      }
-      .left-panel {
-        flex: unset;
-        border-right: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        padding: 30px 20px 20px;
-      }
-      .header-logo img {
-        height: 140px;
-      }
-      .motto {
-        font-size: 26px;
-        margin-bottom: 20px;
-      }
-      .right-panel {
-        padding: 28px 24px;
-      }
-      .form-row {
-        grid-template-columns: 1fr;
-        gap: 14px;
-      }
-      .checkbox-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
+            .header-logo img {
+                height: 140px;
+            }
 
-    @media (max-width: 480px) {
-      .left-panel {
-        padding: 20px 14px;
-      }
-      .header-logo img {
-        height: 100px;
-      }
-      .motto {
-        font-size: 20px;
-        letter-spacing: 2px;
-      }
-      .right-panel {
-        padding: 20px 16px;
-      }
-      .checkbox-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-  </style>
+            .motto {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .right-panel {
+                padding: 25px 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .left-panel {
+                padding: 20px 15px;
+            }
+
+            .header-logo img {
+                height: 100px;
+            }
+
+            .motto {
+                font-size: 20px;
+                letter-spacing: 2px;
+            }
+
+            .right-panel {
+                padding: 20px 15px;
+            }
+
+            .checkbox-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .upload-area {
+                padding: 20px 15px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <!-- background -->
-  <div class="bg-wrapper">
-    <div class="bg-scroll" id="bgScroll">
-      <img src="/static/sheet-bg.png" alt="Background">
-      <img src="/static/sheet-bg.png" alt="Background" class="duplicate">
-    </div>
-  </div>
-  <div class="overlay-gradient"></div>
 
-  <!-- main container: left + right -->
-  <div class="container">
-    <!-- LEFT: eagle, motto, file drag -->
-    <div class="left-panel">
-      <div class="header-logo">
-        <img src="/static/eagle.png" alt="Austrian Eagle" id="eagleLogo">
-      </div>
-      <div class="motto">Meritocracy Reigns Supreme.</div>
-
-      <div class="upload-area" id="dropZone">
-        <span class="upload-icon">📜</span>
-        <div class="label">Drop .txt file here</div>
-        <div class="sub-label">or click to browse</div>
-        <input type="file" name="file" accept=".txt" required id="fileInput">
-        <div class="file-name" id="fileName">Selected: <span id="fileNameText"></span></div>
-      </div>
+    <div class="bg-wrapper">
+        <div class="bg-scroll" id="bgScroll">
+            <img src="/static/sheet-bg.png" alt="Background">
+            <img src="/static/sheet-bg.png" alt="Background" class="duplicate">
+        </div>
     </div>
 
-    <!-- RIGHT: all form inputs -->
-    <div class="right-panel">
-      <form action="/generate" method="POST" enctype="multipart/form-data">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Reason</label>
-            <input type="text" name="reason" placeholder="e.g. Campaign Medal">
-          </div>
-          <div class="form-group">
-            <label>Logged By</label>
-            <input type="text" name="logged_by" placeholder="Your Roblox username">
-          </div>
+    <div class="overlay-gradient"></div>
+
+    <div class="container">
+
+        <!-- LEFT PANEL -->
+        <div class="left-panel">
+            <div class="header-logo">
+                <img src="/static/eagle.png" alt="Austrian Eagle" id="eagleLogo">
+            </div>
+            <div class="motto">Meritocracy Reigns Supreme.</div>
+
+            <div class="upload-area" id="dropZone">
+                <span class="upload-icon">📜</span>
+                <div class="label">Drop your .txt file here</div>
+                <div class="sub-label">or click to browse</div>
+                <input type="file" name="file" accept=".txt" required id="fileInput">
+                <div class="file-name" id="fileName">Selected: <span id="fileNameText"></span></div>
+            </div>
         </div>
 
-        <div class="form-group">
-          <label>Ceremony Format</label>
-          <div class="toggle-group">
-            <input type="radio" name="ceremony_type" value="eu_na" id="eu_na" checked>
-            <label for="eu_na">🌎 EU / NA</label>
-            <input type="radio" name="ceremony_type" value="asia" id="asia">
-            <label for="asia">🌏 Asia</label>
-          </div>
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+            <form action="/generate" method="POST" enctype="multipart/form-data" id="mainForm">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Reason</label>
+                        <input type="text" name="reason" placeholder="e.g. Campaign Medal">
+                    </div>
+                    <div class="form-group">
+                        <label>Logged By</label>
+                        <input type="text" name="logged_by" placeholder="Your Roblox username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Ceremony Format</label>
+                    <div class="toggle-group">
+                        <input type="radio" name="ceremony_type" value="eu_na" id="eu_na" checked>
+                        <label for="eu_na">🌎 EU / NA</label>
+                        <input type="radio" name="ceremony_type" value="asia" id="asia">
+                        <label for="asia">🌏 Asia</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Output Format</label>
+                    <div class="toggle-group">
+                        <input type="radio" name="output" value="excel" id="excel" checked>
+                        <label for="excel">📊 Excel</label>
+                        <input type="radio" name="output" value="json" id="json">
+                        <label for="json">📋 JSON</label>
+                    </div>
+                </div>
+
+                <div id="excel-options">
+                    <div class="section-title">Exclude Clasps</div>
+                    <div class="sub-label-text">Medals</div>
+                    <div class="checkbox-grid">
+                        <label><input type="checkbox" name="exclude_bronze"> Bronze</label>
+                        <label><input type="checkbox" name="exclude_silver"> Silver</label>
+                        <label><input type="checkbox" name="exclude_gold"> Gold</label>
+                        <label><input type="checkbox" name="exclude_no"> No Clasp</label>
+                    </div>
+
+                    <div class="sub-label-text" style="margin-top: 10px;">Orders</div>
+                    <div class="checkbox-grid">
+                        <label><input type="checkbox" name="exclude_knappe"> Knappe</label>
+                        <label><input type="checkbox" name="exclude_ritter"> Ritter</label>
+                        <label><input type="checkbox" name="exclude_kommandeur"> Kommandeur</label>
+                        <label><input type="checkbox" name="exclude_grossmeister"> Großmeister</label>
+                        <label><input type="checkbox" name="exclude_hochmeister"> Hochmeister</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Generate</button>
+
+            </form>
         </div>
 
-        <div class="form-group">
-          <label>Output Format</label>
-          <div class="toggle-group">
-            <input type="radio" name="output" value="excel" id="excel" checked>
-            <label for="excel">📊 Excel</label>
-            <input type="radio" name="output" value="json" id="json">
-            <label for="json">📋 JSON</label>
-          </div>
-        </div>
-
-        <!-- excel options -->
-        <div id="excel-options">
-          <div class="section-title">Exclude Clasps</div>
-          <div style="color: rgba(255,255,255,0.3); font-size: 12px; letter-spacing: 1px; margin-bottom: 4px;">Medals</div>
-          <div class="checkbox-grid">
-            <label><input type="checkbox" name="exclude_bronze"> Bronze</label>
-            <label><input type="checkbox" name="exclude_silver"> Silver</label>
-            <label><input type="checkbox" name="exclude_gold"> Gold</label>
-            <label><input type="checkbox" name="exclude_no"> No Clasp</label>
-          </div>
-
-          <div style="color: rgba(255,255,255,0.3); font-size: 12px; margin-top: 10px; letter-spacing: 1px;">Orders</div>
-          <div class="checkbox-grid">
-            <label><input type="checkbox" name="exclude_knappe"> Knappe</label>
-            <label><input type="checkbox" name="exclude_ritter"> Ritter</label>
-            <label><input type="checkbox" name="exclude_kommandeur"> Kommandeur</label>
-            <label><input type="checkbox" name="exclude_grossmeister"> Großmeister</label>
-            <label><input type="checkbox" name="exclude_hochmeister"> Hochmeister</label>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-submit">Generate</button>
-      </form>
     </div>
-  </div>
 
-  <script>
-    (function() {
-      // --- file drag / drop ---
-      const dropZone = document.getElementById('dropZone');
-      const fileInput = document.getElementById('fileInput');
-      const fileName = document.getElementById('fileName');
-      const fileNameText = document.getElementById('fileNameText');
+    <script>
+        // File upload handling
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileName = document.getElementById('fileName');
+        const fileNameText = document.getElementById('fileNameText');
 
-      dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('click', () => fileInput.click());
 
-      dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-      });
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
 
-      dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover');
-      });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
 
-      dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        if (e.dataTransfer.files.length) {
-          fileInput.files = e.dataTransfer.files;
-          updateFileName();
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                updateFileName();
+            }
+        });
+
+        fileInput.addEventListener('change', updateFileName);
+
+        function updateFileName() {
+            if (fileInput.files.length) {
+                fileNameText.textContent = fileInput.files[0].name;
+                fileName.classList.add('show');
+            } else {
+                fileName.classList.remove('show');
+            }
         }
-      });
 
-      fileInput.addEventListener('change', updateFileName);
+        // Toggle excel options
+        const excelOptions = document.getElementById('excel-options');
+        const outputButtons = document.querySelectorAll('input[name="output"]');
 
-      function updateFileName() {
-        if (fileInput.files.length) {
-          fileNameText.textContent = fileInput.files[0].name;
-          fileName.classList.add('show');
-        } else {
-          fileName.classList.remove('show');
+        function updateOutputOptions() {
+            const selected = document.querySelector('input[name="output"]:checked');
+            excelOptions.style.display = selected && selected.value === 'excel' ? 'block' : 'none';
         }
-      }
 
-      // --- output toggle (excel / json) ---
-      const excelOptions = document.getElementById('excel-options');
-      const outputButtons = document.querySelectorAll('input[name="output"]');
+        outputButtons.forEach(button => {
+            button.addEventListener('change', updateOutputOptions);
+        });
 
-      function updateOutputOptions() {
-        const selected = document.querySelector('input[name="output"]:checked');
-        excelOptions.style.display = (selected && selected.value === 'excel') ? 'block' : 'none';
-      }
+        updateOutputOptions();
 
-      outputButtons.forEach(btn => btn.addEventListener('change', updateOutputOptions));
-      updateOutputOptions();
+        // Eagle fallback
+        document.getElementById('eagleLogo').addEventListener('error', function() {
+            this.style.display = 'none';
+        });
 
-      // --- fallback if eagle image missing ---
-      document.getElementById('eagleLogo').addEventListener('error', function() {
-        this.style.display = 'none';
-      });
+        // The background scrolling code that paused on hover has been REMOVED
+        // as requested - background now scrolls continuously
+    </script>
 
-      // --- REMOVED: the mouseenter/mouseleave that paused background scrolling ---
-      // (exactly as requested: code that stops background from scrolling when mouse is over form is deleted)
-      // The background now scrolls continuously regardless of mouse position.
-    })();
-  </script>
 </body>
+
 </html>

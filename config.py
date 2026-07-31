@@ -1,6 +1,6 @@
 
 
-REGIMENT_MAP = {
+REGIMENT_MAP_FALLBACK = {
     "MO": "Esercito Ducale di Modena",
     "Nr.16": 'NR.16 "Lusignan"',
     "NR.16": 'NR.16 "Lusignan"',

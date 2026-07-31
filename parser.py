@@ -79,7 +79,7 @@ def parse_document(
         
 
         
-        if clasp in ("No", "No Clasp"):
+        if clasp in ("No", "no", "No Clasp"):
             clasp = "Silber"
         
         elif clasp == "Silver":

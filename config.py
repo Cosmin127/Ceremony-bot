@@ -4,7 +4,7 @@ REGIMENT_MAP = {
     "MO": "Esercito Ducale di Modena",
     "Nr.16": 'NR.16 "Lusignan"',
     "NR.16": 'NR.16 "Lusignan"',
-    "Nr.9": 'Nr.9 "Fürst Czartoryski"',
+    "Nr.9": 'Nr.9  "Fürst Czartoryski""',
     "UH": "Kavallerie",
     "TFA": "Artillery",
     "V": "",

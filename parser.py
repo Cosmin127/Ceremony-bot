@@ -18,7 +18,7 @@ def parse_document(text, exclude_clasps=None):
     rows = []
     skipped = []
     current_medal = None
-    current_korps = None  # Start with None, only set when we detect a korps
+    current_korps = None 
 
     for raw_line in text.splitlines():
         line = raw_line.strip()
@@ -27,13 +27,11 @@ def parse_document(text, exclude_clasps=None):
 
         upper = line.upper()
 
-        # Check if this is a korps header
         if upper in KORPS_MAP:
             current_korps = KORPS_MAP[upper]
             print(f"\n--- {current_korps} ---")
             continue
 
-        # Check if this is a medal header
         if upper in MEDAL_HEADER_MAP:
             current_medal = MEDAL_HEADER_MAP[upper]
             print(f"\n=== {current_medal} ===")
@@ -52,12 +50,10 @@ def parse_document(text, exclude_clasps=None):
         if not m:
             continue
 
-        # Handle no tag case - default to GS (Generalstab)
         regiment_tag = (m.group(1) or "GS").strip()
         username = m.group(2).strip()
         clasp = m.group(3).strip()
 
-        # Clean up clasp
         if not clasp:
             clasp = "No Clasp"
 
@@ -68,7 +64,6 @@ def parse_document(text, exclude_clasps=None):
         clasp = re.sub(r"\s+", " ", clasp).strip()
         clasp = clasp.title()
 
-        # Convert clasp variations
         if clasp in ("No", "no", "No Clasp"):
             clasp = "Silber"
         elif clasp == "Silver":
@@ -94,9 +89,7 @@ def parse_document(text, exclude_clasps=None):
             print(f"Skipping {username} ({current_medal}, {clasp})")
             continue
 
-        # Check exclusions
         if clasp == "Silber":
-            # Social medals ("No Clasp") become Silber, but obey the No Clasp checkbox
             if re.search(r"\bno\b", m.group(3), flags=re.IGNORECASE):
                 if exclude_clasps.get("No Clasp", False):
                     print(f"Excluded {username} (No Clasp)")
@@ -108,7 +101,7 @@ def parse_document(text, exclude_clasps=None):
             print(f"Excluded {username} ({clasp})")
             continue
 
-        # Check if this is Generalstab (GS or V tag, or no korps set)
+
         is_generalstab = (
             regiment_tag in ("GS", "V") or 
             current_korps is None or
@@ -116,16 +109,14 @@ def parse_document(text, exclude_clasps=None):
         )
 
         if is_generalstab:
-            # Generalstab entries get empty korps and regiment
+
             korps_name = ""
             regiment_name = ""
         else:
             korps_name = current_korps
-            # Get korps-specific regiment mapping
             korps_regiments = REGIMENT_MAP_BY_KORPS.get(current_korps, {})
             regiment_name = korps_regiments.get(regiment_tag)
             
-            # Fallback to flat mapping if not found
             if regiment_name is None:
                 regiment_name = REGIMENT_MAP_FALLBACK.get(regiment_tag, "")
 

@@ -54,6 +54,21 @@ def generate():
         ""
     ).strip()
 
+    exclude_clasps = {
+    
+        "Bronze": "exclude_bronze" in request.form,
+        "Silver": "exclude_silver" in request.form,
+        "Gold": "exclude_gold" in request.form,
+        "No Clasp": "exclude_no" in request.form,
+    
+        "Knappe": "exclude_knappe" in request.form,
+        "Ritter": "exclude_ritter" in request.form,
+        "Kommandeur": "exclude_kommandeur" in request.form,
+        "Großmeister": "exclude_grossmeister" in request.form,
+        "Hochmeister": "exclude_hochmeister" in request.form,
+    
+    }
+    
     extension = Path(file.filename).suffix.lower()
 
     upload_path = UPLOAD_FOLDER / f"{uuid.uuid4()}{extension}"
@@ -65,6 +80,7 @@ def generate():
         output=output_type,
         reason=reason,
         logged_by=logged_by,
+        exclude_clasps=exclude_clasps,
     )
 
     try:

@@ -25,7 +25,7 @@ OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
 @app.get("/")
 def index():
 
-    return render_template("index2.html")
+    return render_template("index3.html")
 
 
 @app.post("/generate")

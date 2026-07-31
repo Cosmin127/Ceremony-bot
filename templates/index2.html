@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
+<html lang="en"><head>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -382,7 +380,7 @@
         </div>
 
         <div class="motto">Meritocracy Reigns Supreme.</div>
-        <div class="sub-motto">Kaiserliche Zeremonie</div>
+        
 
     </div>
 
@@ -392,7 +390,7 @@
             <span class="upload-icon">📜</span>
             <div class="label">Drop your .txt file here</div>
             <div class="sub-label">or click to browse</div>
-            <input type="file" name="file" accept=".txt" required id="fileInput">
+            <input type="file" name="file" accept=".txt" required="" id="fileInput">
             <div class="file-name" id="fileName">Selected: <span id="fileNameText"></span></div>
         </div>
 
@@ -410,8 +408,8 @@
         <div class="form-group">
             <label>Ceremony Format</label>
             <div class="toggle-group">
-                <input type="radio" name="ceremony_type" value="eu_na" id="eu_na" checked>
-                <label for="eu_na">🇪🇺 EU / NA</label>
+                <input type="radio" name="ceremony_type" value="eu_na" id="eu_na" checked="">
+                <label for="eu_na">🌎 EU / NA</label>
                 <input type="radio" name="ceremony_type" value="asia" id="asia">
                 <label for="asia">🌏 Asia</label>
             </div>
@@ -420,15 +418,15 @@
         <div class="form-group">
             <label>Output Format</label>
             <div class="toggle-group">
-                <input type="radio" name="output" value="excel" id="excel" checked>
+                <input type="radio" name="output" value="excel" id="excel" checked="">
                 <label for="excel">📊 Excel</label>
                 <input type="radio" name="output" value="json" id="json">
                 <label for="json">📋 JSON</label>
             </div>
         </div>
 
-        <div id="excel-options">
-            <div class="divider"></div>
+        <div id="excel-options" style="display: block;">
+            
 
             <div class="section-title">Exclude Clasps</div>
 
@@ -454,9 +452,7 @@
 
     </form>
 
-    <div class="footer">
-        <div class="motto">⚜️ Austria Est Imperare Orbi Universo ⚜️</div>
-    </div>
+    
 
 </div>
 
@@ -521,6 +517,6 @@
 
 </script>
 
-</body>
 
-</html>
+
+</body></html>

@@ -1,6 +1,3 @@
-# Benjamin netanyahu please help me.
-# please let this parser parse correctly
-
 import re
 from config import (
     KORPS_MAP,
@@ -21,7 +18,7 @@ def parse_document(text, exclude_clasps=None):
     rows = []
     skipped = []
     current_medal = None
-    current_korps = "Generalstab" 
+    current_korps = None  # Start with None, only set when we detect a korps
 
     for raw_line in text.splitlines():
         line = raw_line.strip()
@@ -30,16 +27,19 @@ def parse_document(text, exclude_clasps=None):
 
         upper = line.upper()
 
+        # Check if this is a korps header
         if upper in KORPS_MAP:
             current_korps = KORPS_MAP[upper]
             print(f"\n--- {current_korps} ---")
             continue
 
+        # Check if this is a medal header
         if upper in MEDAL_HEADER_MAP:
             current_medal = MEDAL_HEADER_MAP[upper]
             print(f"\n=== {current_medal} ===")
             continue
 
+        # Reset medal context if line doesn't match
         if current_medal is not None and not LINE_RE.match(line):
             if line.startswith("_") or line.startswith("-") or line.isupper():
                 current_medal = None
@@ -52,10 +52,12 @@ def parse_document(text, exclude_clasps=None):
         if not m:
             continue
 
+        # Handle no tag case - default to GS (Generalstab)
         regiment_tag = (m.group(1) or "GS").strip()
         username = m.group(2).strip()
         clasp = m.group(3).strip()
 
+        # Clean up clasp
         if not clasp:
             clasp = "No Clasp"
 
@@ -66,6 +68,7 @@ def parse_document(text, exclude_clasps=None):
         clasp = re.sub(r"\s+", " ", clasp).strip()
         clasp = clasp.title()
 
+        # Convert clasp variations
         if clasp in ("No", "no", "No Clasp"):
             clasp = "Silber"
         elif clasp == "Silver":
@@ -91,9 +94,9 @@ def parse_document(text, exclude_clasps=None):
             print(f"Skipping {username} ({current_medal}, {clasp})")
             continue
 
-        original_clasp = clasp
-
+        # Check exclusions
         if clasp == "Silber":
+            # Social medals ("No Clasp") become Silber, but obey the No Clasp checkbox
             if re.search(r"\bno\b", m.group(3), flags=re.IGNORECASE):
                 if exclude_clasps.get("No Clasp", False):
                     print(f"Excluded {username} (No Clasp)")
@@ -105,21 +108,36 @@ def parse_document(text, exclude_clasps=None):
             print(f"Excluded {username} ({clasp})")
             continue
 
-        korps_regiments = REGIMENT_MAP_BY_KORPS.get(current_korps, {})
-        regiment = korps_regiments.get(regiment_tag)
+        # Check if this is Generalstab (GS or V tag, or no korps set)
+        is_generalstab = (
+            regiment_tag in ("GS", "V") or 
+            current_korps is None or
+            current_korps == "Generalstab"
+        )
 
-        if regiment is None:
-            regiment = REGIMENT_MAP_FALLBACK.get(regiment_tag, "")
+        if is_generalstab:
+            # Generalstab entries get empty korps and regiment
+            korps_name = ""
+            regiment_name = ""
+        else:
+            korps_name = current_korps
+            # Get korps-specific regiment mapping
+            korps_regiments = REGIMENT_MAP_BY_KORPS.get(current_korps, {})
+            regiment_name = korps_regiments.get(regiment_tag)
+            
+            # Fallback to flat mapping if not found
+            if regiment_name is None:
+                regiment_name = REGIMENT_MAP_FALLBACK.get(regiment_tag, "")
 
         rows.append({
             "username": username,
-            "korps": current_korps,
-            "regiment": regiment,
+            "korps": korps_name,
+            "regiment": regiment_name,
             "medal": current_medal,
             "clasp": clasp,
         })
 
-        print(f"Accepted: {username} | {current_korps} | {regiment} | {current_medal} | {clasp}")
+        print(f"Accepted: {username} | {korps_name} | {regiment_name} | {current_medal} | {clasp}")
 
     print("\n========== SUMMARY ==========")
     print(f"Accepted : {len(rows)}")

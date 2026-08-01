@@ -1,3 +1,4 @@
+# main.py
 from pathlib import Path
 from datetime import datetime
 import json
@@ -28,18 +29,13 @@ def process_file(
     reason="",
     logged_by="",
     exclude_clasps=None,
-    ceremony_type="eu_na",
 ):
     print(f"Reading {input_file.name}")
 
     text = input_file.read_text(encoding="utf-8")
     
-    if ceremony_type == "asia":
-        from parser_asia import parse_document
-    else:
-        from parser import parse_document
-    
     rows, skipped = parse_document(text, exclude_clasps or {})
+    
     print("\nResolving Roblox profiles...\n")
 
     failed = 0
@@ -65,6 +61,8 @@ def process_file(
                 "username": row["username"],
                 "medal": row["medal"],
                 "clasp": row["clasp"],
+                "regiment": row.get("regiment", ""),
+                "korps": row.get("korps", "")
             })
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(json_rows, f, indent=4, ensure_ascii=False)
@@ -92,8 +90,8 @@ def process_file(
         for row in rows:
             ws.append([
                 row["username"],
-                row["korps"],
-                row["regiment"],
+                row.get("korps", ""),
+                row.get("regiment", ""),
                 row["profile"],
                 row["medal"],
                 row["clasp"],

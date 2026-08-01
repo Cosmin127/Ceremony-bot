@@ -1,98 +1,14 @@
-
-
-REGIMENT_MAP_FALLBACK = {
-    "MO": "Esercito Ducale di Modena",
-    "Nr.16": 'NR.16 "Lusignan"',
-    "NR.16": 'NR.16 "Lusignan"',
-    "Nr.9": 'Nr.9  "Fürst Czartoryski""',
-    "UH": "Kavallerie",
-    "TFA": "Artillery",
-    "V": "",
-    "AG": "Alte Grenadiere",
-    "JG": "Junge Grenadiere",
-    "MG": "Alte Grenadière",
-    "GS": "",
-    "GR": "Grenz Infanterie",
-    "UH": "Kaiserliche Husaren",
-    "RH": "Kaiserliche Ulanen",
-    "LG": "Kaiserliche Leibgarde",
-    "NR.4": 'NR.4 "Deutschmeister"',
-    "NR.1": 'NR.1 "Kaiser Franz"',
-    "WUR": "Kurfürstentum Württemberg",
-    "ARTY": "Artillery",
-    "NR.59": 'NR.59 "Jordis"',
-    "LEK": "Legion Erzherzog Karl",
-    "NR.25": 'NR.25 "Graf Sporck"',
-    "TR": "Trieste Freikorps",
-    "NR.38": 'NR.38 "Freiherr von Prohaska"',
-    "NR.49": 'NR.49 "von Kerpen"',
-    "IF": "Artillery",
-    
-}
-
-MEDAL_HEADER_MAP = {
-    "AWARDED MEDAL OF EXCELLENCE":
-        "Exzellenz Kampfkruiz",
-
-    "AWARDED MEDAL OF VALOR":
-        "Heldenmut Verdienstmedaille",
-
-    "AWARDED MEDAL OF BRAVERY":
-        "Tapferkeit Verdienstmedaille",
-
-    "AWARDED CHAPLAIN'S MEDAL":
-        "Kaplan Verdienstkruiz",
-
-    "AWARDED FLAG-BEARER CROSS":
-        "Fähnrich Kampfkruiz",
-
-    "AWARDED FLAG-GUARD MEDAL":
-        "Fahnenfeldweibel Verdienstmedaille",
-
-    "AWARDED SOCIAL MEDAL":
-        "Gesellschafts Verdienstmedaille",
-
-    "AWARDED RECRUITER’S MEDAL":
-        "Rekrutierungs Verdienstmedaille",
-
-    "AWARDED FÜNFTES KORPS MEDAL":
-        "Fünftes Korps Verdienststern",
-
-    "GRENADIER KORP MEDALS":
-        "Grenadier Korps Ehrenkruiz",
-
-    "AWARDED GRENADIER KORP MEDALS":
-        "Grenadier Korps Ehrenkruiz",
-    
-    "AWARDED ORDER OF THE GOLDEN FLEECE": 
-        "Ordn des Goldenen Vlies",
-
-    "AWARDED ORDER OF MARIA THERESA":
-        "Ordn von Maria Theresia",
-    
-    "AWARDED ORDER OF ELIZABETH AND THERESA":
-        "Ordn von Elisabeth und Theresia",
-
-    "AWARDED ORDER OF THE EAGLE":
-        "Ordn des Adlers von Este",
-
-    "AWARDED ORDER OF LEOPOLD":
-        "Ordn von Leopold",
-
-    "AWARDED ORDER OF ST. STEPHEN":
-        "Ordn des Heiligen Stephanus",
-
-    "AWARDED ORDER OF THE IRON CROWN":
-        "Ordn der Eisernen Krone",
-}
-
+# config.py
 KORPS_MAP = {
     "KÖNIGLICHE UNGARN": "Königliche Ungarn",
-    "K.U.": "Königliche Ungarn", 
+    "K.U.": "Königliche Ungarn",
     "ERSTE KORPS": "Erste Korps",
     "ZWEITE KORPS": "Zweite Korps",
     "DRITTE KORPS": "Drittes Korps",
     "FÜNFTES KORPS": "Fünftes Korps",
+    "VIERTES KORPS": "Viertes Korps",
+    "GRENADIER KORPS": "Grenadier Korps",
+    "HUNGARIAN KORPS": "Königliche Ungarn",
 }
 
 REGIMENT_MAP_BY_KORPS = {
@@ -100,13 +16,13 @@ REGIMENT_MAP_BY_KORPS = {
         "AG": "Alte Grenadiere",
         "JG": "Junge Grenadiere",
         "MG": "Alte Grenadière",
-        "GS": "", 
+        "GS": "",
         "GR": "Grenz Infanterie",
         "UH": "Kaiserliche Husaren",
         "RH": "Kaiserliche Ulanen",
         "LG": "Kaiserliche Leibgarde",
         "HFA": "Artillery",
-        "ARTY": "Artillery",  
+        "ARTY": "Artillery",
     },
     "Erste Korps": {
         "GS": "",
@@ -114,7 +30,6 @@ REGIMENT_MAP_BY_KORPS = {
         "NR.4": 'NR.4 "Deutschmeister"',
         "WUR": "Kurfürstentum Württemberg",
         "ARTY": "Artillery",
-       
     },
     "Zweite Korps": {
         "GS": "",
@@ -128,8 +43,8 @@ REGIMENT_MAP_BY_KORPS = {
         "NR.38": 'NR.38 "Freiherr von Prohaska"',
         "NR.49": 'NR.49 "von Kerpen"',
         "TR": "Trieste Freikorps",
-        "IF": "Artillery", 
-        "ARTY": "Artillery", 
+        "IF": "Artillery",
+        "ARTY": "Artillery",
     },
     "Fünftes Korps": {
         "GS": "",
@@ -139,8 +54,97 @@ REGIMENT_MAP_BY_KORPS = {
         "TFA": "Artillery",
         "UH": "Kavallerie",
         "CAV": "Kavallerie",
-        "V": "", 
+        "V": "",
         "ARTY": "Artillery",
     },
 }
 
+REGIMENT_MAP_FALLBACK = {
+    "MO": "Esercito Ducale di Modena",
+    "Nr.16": 'NR.16 "Lusignan"',
+    "NR.16": 'NR.16 "Lusignan"',
+    "Nr.9": 'Nr.9  "Fürst Czartoryski"',
+    "UH": "Kavallerie",
+    "TFA": "Artillery",
+    "V": "",
+    "AG": "Alte Grenadiere",
+    "JG": "Junge Grenadiere",
+    "MG": "Alte Grenadière",
+    "GS": "",
+    "GR": "Grenz Infanterie",
+    "RH": "Kaiserliche Ulanen",
+    "LG": "Kaiserliche Leibgarde",
+    "NR.4": 'NR.4 "Deutschmeister"',
+    "NR.1": 'NR.1 "Kaiser Franz"',
+    "WUR": "Kurfürstentum Württemberg",
+    "ARTY": "Artillery",
+    "NR.59": 'NR.59 "Jordis"',
+    "LEK": "Legion Erzherzog Karl",
+    "NR.25": 'NR.25 "Graf Sporck"',
+    "TR": "Trieste Freikorps",
+    "NR.38": 'NR.38 "Freiherr von Prohaska"',
+    "NR.49": 'NR.49 "von Kerpen"',
+    "IF": "Artillery",
+}
+
+MEDAL_HEADER_MAP = {
+    "AWARDED MEDAL OF EXCELLENCE": "Exzellenz Kampfkruiz",
+    "AWARDED MEDAL OF VALOR": "Heldenmut Verdienstmedaille",
+    "AWARDED MEDAL OF BRAVERY": "Tapferkeit Verdienstmedaille",
+    "AWARDED CHAPLAIN'S MEDAL": "Kaplan Verdienstkruiz",
+    "AWARDED CHAPLINS MEDAL": "Kaplan Verdienstkruiz",
+    "AWARDED FLAG-BEARER CROSS": "Fähnrich Kampfkruiz",
+    "AWARDED FLAG-GUARD MEDAL": "Fahnenfeldweibel Verdienstmedaille",
+    "AWARDED SOCIAL MEDAL": "Gesellschafts Verdienstmedaille",
+    "AWARDED RECRUITER’S MEDAL": "Rekrutierungs Verdienstmedaille",
+    "AWARDED RECRUITER'S MEDAL": "Rekrutierungs Verdienstmedaille",
+    "AWARDED ARTIST’S MEDAL": "Künstler Verdienstmedaille",
+    "AWARDED ARTIST'S MEDAL": "Künstler Verdienstmedaille",
+    "AWARDED ARTISTS MEDAL": "Künstler Verdienstmedaille",
+    "AWARDED ARTIST MEDAL": "Künstler Verdienstmedaille",
+    "AWARDED ARTILLERY KORPS MEDAL": "Artillerie Korps Verdienstmedaille",
+    "AWARDED ARTILLERY MEDAL": "Artillerie Korps Verdienstmedaille",
+    "AWARDED GRENADIER KORPS MEDAL": "Grenadier Korps Ehrenkruiz",
+    "AWARDED GRENADIER KORP MEDALS": "Grenadier Korps Ehrenkruiz",
+    "AWARDED ERSTE KORPS MEDAL": "Erste Korps Verdienststern",
+    "AWARDED ZWEITE KORPS MEDAL": "Zweite Korps Verdienststern",
+    "AWARDED DRITTE KORPS MEDAL": "Dritte Korps Verdienststern",
+    "AWARDED FÜNFTES KORPS MEDAL": "Fünftes Korps Verdienststern",
+    "AWARDED ENGINEER MEDAL": "Ingenieur Verdienstmedaille",
+    "MEDAL OF EXCELLENCE": "Exzellenz Kampfkruiz",
+    "MEDAL OF VALOR": "Heldenmut Verdienstmedaille",
+    "MEDAL OF BRAVERY": "Tapferkeit Verdienstmedaille",
+    "CHAPLAIN'S MEDAL": "Kaplan Verdienstkruiz",
+    "CHAPLAIN’S MEDAL": "Kaplan Verdienstkruiz",
+    "FLAG-BEARER CROSS": "Fähnrich Kampfkruiz",
+    "FLAG-GUARD MEDAL": "Fahnenfeldweibel Verdienstmedaille",
+    "SOCIAL MEDAL": "Gesellschafts Verdienstmedaille",
+    "RECRUITER'S MEDAL": "Rekrutierungs Verdienstmedaille",
+    "RECRUITER’S MEDAL": "Rekrutierungs Verdienstmedaille",
+    "ARTIST'S MEDAL": "Künstler Verdienstmedaille",
+    "ARTIST’S MEDAL": "Künstler Verdienstmedaille",
+    "ARTILLERY KORPS MEDAL": "Artillerie Korps Verdienstmedaille",
+    "VIERTES KORPS MEDAL": "Viertes Korps Verdienststern",
+    "GRENADIER KORPS MEDAL": "Grenadier Korps Ehrenkruiz",
+    "GRENADIER KORP MEDALS": "Grenadier Korps Ehrenkruiz",
+    "HUNGARIAN KORPS MEDAL": "Ungarische Korps Verdienstmedaille",
+    "AWARDED ORDER OF THE GOLDEN FLEECE": "Ordn des Goldenen Vlies",
+    "ORDER OF THE GOLDEN FLEECE": "Ordn des Goldenen Vlies",
+    "AWARDED ORDER OF MARIA THERESA": "Ordn von Maria Theresia",
+    "ORDER OF MARIA THERESA": "Ordn von Maria Theresia",
+    "AWARDED ORDER OF ELIZABETH AND THERESA": "Ordn von Elisabeth und Theresia",
+    "ORDER OF ELIZABETH & THERESA": "Ordn von Elisabeth und Theresia",
+    "ORDER OF ELIZABETH AND THERESA": "Ordn von Elisabeth und Theresia",
+    "AWARDED ORDER OF THE EAGLE": "Ordn des Adlers von Este",
+    "ORDER OF THE EAGLE": "Ordn des Adlers von Este",
+    "AWARDED ORDER OF LEOPOLD": "Ordn von Leopold",
+    "ORDER OF LEOPOLD": "Ordn von Leopold",
+    "AWARDED ORDER OF ST. STEPHEN": "Ordn des Heiligen Stephanus",
+    "AWARDED ORDER OF THE IRON CROWN": "Ordn der Eisernen Krone",
+    "ORDER OF THE IRON CROWN": "Ordn der Eisernen Krone",
+    "ORDER OF THE IMPERIAL MERIT": "Ordn des Kaiserlichen Verdienstes",
+    "AWARDED ORDER OF THE IMPERIAL MERIT": "Ordn des Kaiserlichen Verdienstes",
+    "TEUTONIC ORDER": "Teutonischer Orden",
+}
+
+VALID_CLASPS = ("Bronze", "Silber", "Gold", "Großmeister", "Kommandeur", "Ritter", "Hochmeister", "Knappe")

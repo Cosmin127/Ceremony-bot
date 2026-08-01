@@ -1,3 +1,4 @@
+# app.py
 from pathlib import Path
 import uuid
 import os
@@ -15,7 +16,7 @@ from main import process_file
 
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 UPLOAD_FOLDER = Path("uploads")
 OUTPUT_FOLDER = Path("output")
@@ -32,28 +33,19 @@ def index():
 @app.post("/generate")
 def generate():
     try:
-        print(f"Files: {request.files}")
-        print(f"Form: {request.form}")
-
         if "file" not in request.files:
-            print("ERROR: No file in request")
             return jsonify({"error": "No file uploaded"}), 400
 
         file = request.files["file"]
 
         if file.filename == "":
-            print("ERROR: Empty filename")
             return jsonify({"error": "Empty filename"}), 400
 
-        print(f"File received: {file.filename}, size: {len(file.read()) if file else 'unknown'}")
-
-     
         file.seek(0)
 
         output_type = request.form.get("output", "excel")
         reason = request.form.get("reason", "").strip()
         logged_by = request.form.get("logged_by", "").strip()
-        ceremony_type = request.form.get("ceremony_type", "eu_na")
 
         exclude_clasps = {
             "Bronze": "exclude_bronze" in request.form,
@@ -71,27 +63,20 @@ def generate():
         upload_path = UPLOAD_FOLDER / f"{uuid.uuid4()}{extension}"
         file.save(upload_path)
 
-        print(f"File saved to: {upload_path}")
-
         output_file = process_file(
             upload_path,
             output=output_type,
             reason=reason,
             logged_by=logged_by,
             exclude_clasps=exclude_clasps,
-            ceremony_type=ceremony_type,
         )
 
-        print(f"Output file: {output_file}")
-
-   
         try:
             os.remove(upload_path)
         except FileNotFoundError:
             pass
 
         if not output_file.exists():
-            print(f"ERROR: Output file not found: {output_file}")
             return jsonify({"error": "Output file was not created"}), 500
 
         if output_type == "json":

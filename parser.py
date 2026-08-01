@@ -1,29 +1,83 @@
+# parser.py
 import re
 from config import (
     KORPS_MAP,
     REGIMENT_MAP_BY_KORPS,
     REGIMENT_MAP_FALLBACK,
     MEDAL_HEADER_MAP,
+    VALID_CLASPS
 )
 
-# fatass regex please work for the love of god and all thats holy.
-# why couldnt HiCom write properly formatted documents that wouldn't need regex at all
-LINE_RE = re.compile(
-    r"(?:\[(.*?)\]\s*-*\s*)?([A-Za-z0-9_]+)\s*(?:,|-)\s*(.+)"
-)
+EU_PATTERN = re.compile(r"(?:\[(.*?)\]\s*-*\s*)?([A-Za-z0-9_]+)\s*(?:,|-)\s*(.+)")
+ASIA_MEDAL_PATTERN = re.compile(r"^\*\s*([A-Za-z0-9_]+)\s*(?:-|\s+)?\s*(.*)$")
+ASIA_ORDER_REGIMENT = re.compile(r"^Regiment:\s*(.+)$", re.IGNORECASE)
+ASIA_ORDER_USERNAME = re.compile(r"^Username:\s*(.+)$", re.IGNORECASE)
+ASIA_ORDER_CLASS = re.compile(r"^Class:\s*(.+)$", re.IGNORECASE)
 
+def clean_clasp(clasp):
+    if not clasp:
+        return "No Clasp"
+    clasp = clasp.lower().strip()
+    clasp = re.sub(r'\s+clasp\b', '', clasp)
+    clasp = re.sub(r'\s+class\b', '', clasp)
+    clasp = re.sub(r'\s+medal\b', '', clasp)
+    clasp = re.sub(r'[.,;:]+$', '', clasp)
+    clasp = re.sub(r'\s+', ' ', clasp).strip()
+    if "no" in clasp or clasp == "":
+        return "No Clasp"
+    if "silver" in clasp:
+        return "Silber"
+    if "bronze" in clasp:
+        return "Bronze"
+    if "gold" in clasp:
+        return "Gold"
+    if "knappe" in clasp:
+        return "Knappe"
+    if "ritter" in clasp:
+        return "Ritter"
+    if "kommandeur" in clasp:
+        return "Kommandeur"
+    if "großmeister" in clasp or "grossmeister" in clasp:
+        return "Großmeister"
+    if "hochmeister" in clasp:
+        return "Hochmeister"
+    return clasp.title()
+
+def get_regiment_name(regiment_tag, korps):
+    if not regiment_tag:
+        return ""
+    if korps and korps in REGIMENT_MAP_BY_KORPS:
+        return REGIMENT_MAP_BY_KORPS[korps].get(regiment_tag, REGIMENT_MAP_FALLBACK.get(regiment_tag, ""))
+    return REGIMENT_MAP_FALLBACK.get(regiment_tag, "")
+
+def get_korps_from_regiment(regiment_tag):
+    if not regiment_tag:
+        return ""
+    for korps, regiments in REGIMENT_MAP_BY_KORPS.items():
+        if regiment_tag in regiments:
+            return korps
+    return ""
+
+def detect_format(text):
+    lines = text.splitlines()
+    asia_score = sum(1 for i in ["ASIAN KORPS CEREMONY", "ASIA KORPS-MEDAILLEN", "ÖSTERREICHISCHER ADELSHOF", "REGIMENTALE PROMOTIONEN", "GRENADIER-ENTWÜRFE"] if i in text)
+    eu_score = sum(1 for i in ["KAISERLICHE ZEREMONIE", "GENERALSTAB", "KÖNIGLICHE UNGARN", "ERSTE KORPS", "ZWEITE KORPS", "DRITTE KORPS", "FÜNFTES KORPS"] if i in text)
+    asia_score += sum(1 for line in lines[:30] if line.strip().startswith("*") and " - " in line) * 0.5
+    eu_score += sum(1 for line in lines[:30] if "[" in line and "]" in line and (" - " in line or ", " in line)) * 0.5
+    return 'asia' if asia_score > eu_score else 'eu_na'
 
 def parse_document(text, exclude_clasps=None):
     if exclude_clasps is None:
         exclude_clasps = {}
+    
+    rows, skipped = [], []
+    current_item, current_korps = None, None
+    format_type = detect_format(text)
+    asia_order_buffer = {}
+    in_asia_order = False
 
-    rows = []
-    skipped = []
-    current_medal = None
-    current_korps = None 
-
-    for raw_line in text.splitlines():
-        line = raw_line.strip()
+    for line in text.splitlines():
+        line = line.strip()
         if not line:
             continue
 
@@ -31,109 +85,116 @@ def parse_document(text, exclude_clasps=None):
 
         if upper in KORPS_MAP:
             current_korps = KORPS_MAP[upper]
-            print(f"\n--- {current_korps} ---")
+            current_item = None
+            in_asia_order = False
             continue
 
         if upper in MEDAL_HEADER_MAP:
-            current_medal = MEDAL_HEADER_MAP[upper]
-            print(f"\n=== {current_medal} ===")
+            current_item = MEDAL_HEADER_MAP[upper]
+            in_asia_order = "ORDER" in upper
             continue
 
-        # Reset medal context if line doesn't match
-        if current_medal is not None and not LINE_RE.match(line):
-            if line.startswith("_") or line.startswith("-") or line.isupper():
-                current_medal = None
+        if current_item is None:
             continue
 
-        if current_medal is None:
-            continue
-
-        m = LINE_RE.match(line)
-        if not m:
-            continue
-
-        regiment_tag = (m.group(1) or "GS").strip()
-        username = m.group(2).strip()
-        clasp = m.group(3).strip()
-
-        if not clasp:
-            clasp = "No Clasp"
-
-        clasp = re.sub(r"\s+clasp\b", "", clasp, flags=re.IGNORECASE)
-        clasp = re.sub(r"\s+class\b", "", clasp, flags=re.IGNORECASE)
-        clasp = re.sub(r"\s+medal\b", "", clasp, flags=re.IGNORECASE)
-        clasp = re.sub(r"[.,;:]+$", "", clasp)
-        clasp = re.sub(r"\s+", " ", clasp).strip()
-        clasp = clasp.title()
-
-        if clasp in ("No", "no", "No Clasp"):
-            clasp = "Silber"
-        elif clasp == "Silver":
-            clasp = "Silber"
-
-        valid_clasps = (
-            "Bronze",
-            "Silber",
-            "Gold",
-            "Großmeister",
-            "Kommandeur",
-            "Ritter",
-            "Hochmeister",
-            "Knappe",
-        )
-
-        if clasp not in valid_clasps:
-            skipped.append({
-                "user": username,
-                "medal": current_medal,
-                "clasp": clasp,
-            })
-            print(f"Skipping {username} ({current_medal}, {clasp})")
-            continue
-
-        if clasp == "Silber":
-            if re.search(r"\bno\b", m.group(3), flags=re.IGNORECASE):
-                if exclude_clasps.get("No Clasp", False):
-                    print(f"Excluded {username} (No Clasp)")
-                    continue
-            elif exclude_clasps.get("Silver", False):
-                print(f"Excluded {username} (Silver)")
+        if format_type == 'eu_na':
+            match = EU_PATTERN.match(line)
+            if not match:
                 continue
-        elif exclude_clasps.get(clasp, False):
-            print(f"Excluded {username} ({clasp})")
-            continue
 
+            regiment_tag, username, clasp = (match.group(1) or "").strip(), match.group(2).strip(), clean_clasp(match.group(3).strip())
 
-        is_generalstab = (
-            regiment_tag in ("GS", "V") or 
-            current_korps is None or
-            current_korps == "Generalstab"
-        )
+            if clasp not in VALID_CLASPS:
+                skipped.append({"user": username, "medal": current_item, "clasp": clasp})
+                continue
 
-        if is_generalstab:
+            if exclude_clasps.get(clasp, False) or (clasp == "Silber" and "no" in line.lower() and exclude_clasps.get("No Clasp", False)):
+                continue
 
-            korps_name = ""
-            regiment_name = ""
-        else:
+            if clasp == "No Clasp" or "SOCIAL" in upper or "SOCIAL" in current_item.upper():
+                clasp = "Silber"
+
             korps_name = current_korps
-            korps_regiments = REGIMENT_MAP_BY_KORPS.get(current_korps, {})
-            regiment_name = korps_regiments.get(regiment_tag)
-            
-            if regiment_name is None:
+            regiment_name = get_regiment_name(regiment_tag, current_korps)
+            if not regiment_name and regiment_tag:
                 regiment_name = REGIMENT_MAP_FALLBACK.get(regiment_tag, "")
 
-        rows.append({
-            "username": username,
-            "korps": korps_name,
-            "regiment": regiment_name,
-            "medal": current_medal,
-            "clasp": clasp,
-        })
+            rows.append({"username": username, "korps": korps_name, "regiment": regiment_name, "medal": current_item, "clasp": clasp})
 
-        print(f"Accepted: {username} | {korps_name} | {regiment_name} | {current_medal} | {clasp}")
+        else:
+            if in_asia_order:
+                regiment_match = ASIA_ORDER_REGIMENT.match(line)
+                username_match = ASIA_ORDER_USERNAME.match(line)
+                class_match = ASIA_ORDER_CLASS.match(line)
 
-    print("\n========== SUMMARY ==========")
-    print(f"Accepted : {len(rows)}")
-    print(f"Skipped  : {len(skipped)}")
+                if regiment_match:
+                    asia_order_buffer["regiment"] = regiment_match.group(1).strip()
+                    continue
+                if username_match:
+                    asia_order_buffer["username"] = username_match.group(1).strip()
+                    continue
+                if class_match:
+                    asia_order_buffer["clasp"] = clean_clasp(class_match.group(1).strip())
+                    continue
+
+                if "regiment" in asia_order_buffer and "username" in asia_order_buffer and "clasp" in asia_order_buffer:
+                    regiment_tag, username, clasp = asia_order_buffer["regiment"], asia_order_buffer["username"], asia_order_buffer["clasp"]
+                    korps_name, regiment_name = "", ""
+                    
+                    for korps, regs in REGIMENT_MAP_BY_KORPS.items():
+                        for tag, name in regs.items():
+                            if name and name.lower() in regiment_tag.lower():
+                                korps_name, regiment_name = korps, name
+                                break
+                        if korps_name:
+                            break
+                    
+                    if not korps_name:
+                        for tag, name in REGIMENT_MAP_FALLBACK.items():
+                            if name and name.lower() in regiment_tag.lower():
+                                korps_name, regiment_name = get_korps_from_regiment(tag), name
+                                break
+                    
+                    if not regiment_name:
+                        regiment_name = regiment_tag
+                    
+                    if clasp == "No Clasp":
+                        clasp = "Silber"
+                    
+                    if clasp in VALID_CLASPS:
+                        rows.append({"username": username, "korps": korps_name, "regiment": regiment_name, "medal": current_item, "clasp": clasp})
+                    else:
+                        skipped.append({"user": username, "medal": current_item, "clasp": clasp})
+                    
+                    asia_order_buffer = {}
+                continue
+
+            if "SOCIAL" in upper or "SOCIAL" in current_item.upper():
+                match = ASIA_MEDAL_PATTERN.match(line)
+                if match:
+                    rows.append({"username": match.group(1).strip(), "korps": "", "regiment": "", "medal": current_item, "clasp": "Silber"})
+                continue
+
+            match = ASIA_MEDAL_PATTERN.match(line)
+            if not match:
+                continue
+
+            username, clasp = match.group(1).strip(), clean_clasp(match.group(2).strip())
+
+            if "Social" in current_item or "SOCIAL" in upper:
+                rows.append({"username": username, "korps": "", "regiment": "", "medal": current_item, "clasp": "Silber"})
+                continue
+
+            if clasp not in VALID_CLASPS:
+                skipped.append({"user": username, "medal": current_item, "clasp": clasp})
+                continue
+
+            if exclude_clasps.get(clasp, False):
+                continue
+
+            if clasp == "No Clasp":
+                clasp = "Silber"
+
+            rows.append({"username": username, "korps": "", "regiment": "", "medal": current_item, "clasp": clasp})
 
     return rows, skipped

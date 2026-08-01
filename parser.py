@@ -6,6 +6,8 @@ from config import (
     MEDAL_HEADER_MAP,
 )
 
+# fatass regex please work for the love of god and all thats holy.
+# why couldnt HiCom write properly formatted documents that wouldn't need regex at all
 LINE_RE = re.compile(
     r"(?:\[(.*?)\]\s*-*\s*)?([A-Za-z0-9_]+)\s*(?:,|-)\s*(.+)"
 )

@@ -1,6 +1,8 @@
 import re
 from config_asia import MEDAL_HEADER_MAP_ASIA
 
+# second regex of doom and despair but for asia. 
+# at least asia hicom that makes documents respect formatting way more
 MEDAL_LINE_RE = re.compile(
     r"^\*\s*([A-Za-z0-9_]+)\s*(?:-|\s+)?\s*(.*)$"
 )

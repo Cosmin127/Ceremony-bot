@@ -15,7 +15,7 @@ from main import process_file
 
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 
 
 UPLOAD_FOLDER = Path("uploads")
 OUTPUT_FOLDER = Path("output")
@@ -47,7 +47,7 @@ def generate():
 
         print(f"File received: {file.filename}, size: {len(file.read()) if file else 'unknown'}")
 
-        # Reset file pointer after reading
+     
         file.seek(0)
 
         output_type = request.form.get("output", "excel")
@@ -84,7 +84,7 @@ def generate():
 
         print(f"Output file: {output_file}")
 
-        # Clean up upload
+   
         try:
             os.remove(upload_path)
         except FileNotFoundError:

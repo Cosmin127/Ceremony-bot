@@ -8,6 +8,9 @@
 
     <title>Ceremony Bot</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+
     <style>
 
         * {
@@ -166,6 +169,7 @@
             margin-bottom: 10px;
             display: block;
             opacity: 0.7;
+            color: #a38a56;
         }
 
         .upload-area .label {
@@ -508,7 +512,7 @@
                     <div class="motto">Meritocracy Reigns Supreme.</div>
 
                     <div class="upload-area" id="dropZone">
-                        <span class="upload-icon">📜</span>
+                        <span class="upload-icon">✦</span>
                         <div class="label">Drop your .txt file here</div>
                         <div class="sub-label">or click to browse</div>
                         <input type="file" name="file" accept=".txt" required="" id="fileInput">
@@ -535,9 +539,9 @@
                         <label>Ceremony Format</label>
                         <div class="toggle-group">
                             <input type="radio" name="ceremony_type" value="eu_na" id="eu_na" checked="">
-                            <label for="eu_na">🌎 EU / NA</label>
+                            <label for="eu_na">EU / NA</label>
                             <input type="radio" name="ceremony_type" value="asia" id="asia">
-                            <label for="asia">🌏 Asia</label>
+                            <label for="asia">Asia</label>
                         </div>
                     </div>
 
@@ -545,9 +549,9 @@
                         <label>Output Format</label>
                         <div class="toggle-group">
                             <input type="radio" name="output" value="excel" id="excel" checked="">
-                            <label for="excel">📊 Excel</label>
+                            <label for="excel">Excel</label>
                             <input type="radio" name="output" value="json" id="json">
-                            <label for="json">📋 JSON</label>
+                            <label for="json">JSON</label>
                         </div>
                     </div>
 
@@ -682,4 +686,5 @@
     </div>
 
 </body>
+
 </html>

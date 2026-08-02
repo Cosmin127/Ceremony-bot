@@ -143,8 +143,6 @@ MEDAL_HEADER_MAP = {
     "AWARDED ORDER OF THE IRON CROWN": "Ordn der Eisernen Krone",
     "ORDER OF THE IRON CROWN": "Ordn der Eisernen Krone",
     "ORDER OF THE IMPERIAL MERIT": "Ordn des Kaiserlichen Verdienstes",
-    "AWARDED ORDER OF THE IMPERIAL MERIT": "Ordn des Kaiserlichen Verdienstes",
-    "TEUTONIC ORDER": "Teutonischer Orden",
 }
 
 VALID_CLASPS = ("Bronze", "Silber", "Gold", "Großmeister", "Kommandeur", "Ritter", "Hochmeister", "Knappe")

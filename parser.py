@@ -1,4 +1,3 @@
-# parser.py
 import re
 from config import (
     KORPS_MAP,
@@ -50,12 +49,27 @@ def get_regiment_name(regiment_tag, korps):
         return REGIMENT_MAP_BY_KORPS[korps].get(regiment_tag, REGIMENT_MAP_FALLBACK.get(regiment_tag, ""))
     return REGIMENT_MAP_FALLBACK.get(regiment_tag, "")
 
-def get_korps_from_regiment(regiment_tag):
+def get_korps_from_regiment_with_context(regiment_tag, context_korps=None):
+    """Get korps from regiment tag, using context if provided"""
     if not regiment_tag:
         return ""
+    
+    if context_korps:
+        if context_korps in REGIMENT_MAP_BY_KORPS:
+            if regiment_tag in REGIMENT_MAP_BY_KORPS[context_korps]:
+                return context_korps
+    
+    found_korps = []
     for korps, regiments in REGIMENT_MAP_BY_KORPS.items():
         if regiment_tag in regiments:
-            return korps
+            found_korps.append(korps)
+    
+    if len(found_korps) == 1:
+        return found_korps[0]
+    
+    if found_korps:
+        return found_korps[0]
+    
     return ""
 
 def detect_format(text):
@@ -115,11 +129,28 @@ def parse_document(text, exclude_clasps=None):
                 clasp = "Silber"
 
             korps_name = current_korps
-            regiment_name = get_regiment_name(regiment_tag, current_korps)
+            
+            if not korps_name and regiment_tag:
+                korps_name = get_korps_from_regiment_with_context(regiment_tag, None)
+            
+            if korps_name and regiment_tag:
+                if korps_name in REGIMENT_MAP_BY_KORPS:
+                    if regiment_tag not in REGIMENT_MAP_BY_KORPS[korps_name]:
+                        found = get_korps_from_regiment_with_context(regiment_tag, None)
+                        if found:
+                            korps_name = found
+            
+            regiment_name = get_regiment_name(regiment_tag, korps_name)
             if not regiment_name and regiment_tag:
                 regiment_name = REGIMENT_MAP_FALLBACK.get(regiment_tag, "")
 
-            rows.append({"username": username, "korps": korps_name, "regiment": regiment_name, "medal": current_item, "clasp": clasp})
+            rows.append({
+                "username": username, 
+                "korps": korps_name, 
+                "regiment": regiment_name, 
+                "medal": current_item, 
+                "clasp": clasp
+            })
 
         else:
             if in_asia_order:
@@ -141,18 +172,20 @@ def parse_document(text, exclude_clasps=None):
                     regiment_tag, username, clasp = asia_order_buffer["regiment"], asia_order_buffer["username"], asia_order_buffer["clasp"]
                     korps_name, regiment_name = "", ""
                     
+                    korps_name = get_korps_from_regiment_with_context(regiment_tag, current_korps)
+                    
                     for korps, regs in REGIMENT_MAP_BY_KORPS.items():
                         for tag, name in regs.items():
                             if name and name.lower() in regiment_tag.lower():
-                                korps_name, regiment_name = korps, name
+                                regiment_name = name
                                 break
-                        if korps_name:
+                        if regiment_name:
                             break
                     
-                    if not korps_name:
+                    if not regiment_name:
                         for tag, name in REGIMENT_MAP_FALLBACK.items():
                             if name and name.lower() in regiment_tag.lower():
-                                korps_name, regiment_name = get_korps_from_regiment(tag), name
+                                regiment_name = name
                                 break
                     
                     if not regiment_name:

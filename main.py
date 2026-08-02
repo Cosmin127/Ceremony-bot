@@ -61,8 +61,6 @@ def process_file(
                 "username": row["username"],
                 "medal": row["medal"],
                 "clasp": row["clasp"],
-                "regiment": row.get("regiment", ""),
-                "korps": row.get("korps", "")
             })
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(json_rows, f, indent=4, ensure_ascii=False)

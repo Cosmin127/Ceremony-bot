@@ -50,25 +50,23 @@ def get_regiment_name(regiment_tag, korps):
     return REGIMENT_MAP_FALLBACK.get(regiment_tag, "")
 
 def get_korps_from_regiment_with_context(regiment_tag, context_korps=None):
-    """Get korps from regiment tag, using context if provided"""
+    """Get korps from regiment tag. If tag exists in multiple korps, use context."""
     if not regiment_tag:
         return ""
-    
-    if context_korps:
-        if context_korps in REGIMENT_MAP_BY_KORPS:
-            if regiment_tag in REGIMENT_MAP_BY_KORPS[context_korps]:
-                return context_korps
     
     found_korps = []
     for korps, regiments in REGIMENT_MAP_BY_KORPS.items():
         if regiment_tag in regiments:
             found_korps.append(korps)
     
+    if not found_korps:
+        return ""
+    
     if len(found_korps) == 1:
         return found_korps[0]
     
-    if found_korps:
-        return found_korps[0]
+    if context_korps and context_korps in found_korps:
+        return context_korps
     
     return ""
 
@@ -128,19 +126,11 @@ def parse_document(text, exclude_clasps=None):
             if clasp == "No Clasp" or "SOCIAL" in upper or "SOCIAL" in current_item.upper():
                 clasp = "Silber"
 
-            korps_name = current_korps
+            korps_name = ""
+            if regiment_tag:
+                korps_name = get_korps_from_regiment_with_context(regiment_tag, current_korps)
             
-            if not korps_name and regiment_tag:
-                korps_name = get_korps_from_regiment_with_context(regiment_tag, None)
-            
-            if korps_name and regiment_tag:
-                if korps_name in REGIMENT_MAP_BY_KORPS:
-                    if regiment_tag not in REGIMENT_MAP_BY_KORPS[korps_name]:
-                        found = get_korps_from_regiment_with_context(regiment_tag, None)
-                        if found:
-                            korps_name = found
-            
-            regiment_name = get_regiment_name(regiment_tag, korps_name)
+            regiment_name = get_regiment_name(regiment_tag, korps_name if korps_name else current_korps)
             if not regiment_name and regiment_tag:
                 regiment_name = REGIMENT_MAP_FALLBACK.get(regiment_tag, "")
 
